@@ -1,4 +1,5 @@
 import {
+  AfterRemove,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -67,4 +68,9 @@ export class UserEntity {
   @OneToOne(() => CaregiverEntity, { cascade: true })
   @JoinColumn()
   caregiver: CaregiverEntity;
+
+  @AfterRemove()
+  updateStatus() {
+    this.deletedAt = new Date();
+  }
 }

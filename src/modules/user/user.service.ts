@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/database/entities/user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from 'src/models/user';
 
 @Injectable()
@@ -61,16 +61,12 @@ export class UserService {
   }
 
   async remove(id: number): Promise<boolean> {
-    // TODO: Realizar softdelete
-    const user = await this.userRepository.findOneBy({ id });
-    this.logger.debug(`Operación : ${user.email}`);
+    const success = await this.userRepository.softDelete({ id: id });
 
-    if (!user) {
+    if (success === null) {
       return false;
     }
 
-    // TODO: Pensar
-    // user.deletedAt = Date.now;
     return true;
   }
 
