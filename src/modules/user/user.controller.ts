@@ -16,6 +16,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Logger } from '@nestjs/common';
 import { Response } from 'express';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
+import { AuthGuard } from '../auth/guard/auth.guard';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -46,6 +49,8 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async remove(@Res() res: Response, @Param('id') id: number) {
     try {

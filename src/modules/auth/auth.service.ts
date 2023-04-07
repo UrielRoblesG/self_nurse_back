@@ -11,6 +11,8 @@ import { RegisterAuthDto } from './dto/register-auth.dto';
 import { UserService } from '../user/user.service';
 import { JwtConstant } from './jwt.constant';
 import { ConfigService } from '@nestjs/config';
+import { Public } from 'src/common/decorators/public.decorator';
+import { getRole } from 'src/common/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +23,7 @@ export class AuthService {
     private readonly configServie: ConfigService,
   ) {}
 
+  @Public()
   async login(user: LoginAuthDto): Promise<IAuthRespose> {
     const { password } = user;
 
@@ -42,10 +45,12 @@ export class AuthService {
       );
     }
 
+    const role = getRole(findUser.idType);
+
     const payload = {
       id: findUser.id,
       email: findUser.email,
-      type: findUser.idType,
+      role: role,
     };
 
     const token = await this.jwtService.sign(payload, {
@@ -59,7 +64,7 @@ export class AuthService {
       user: User.fromUserEntity(findUser),
     };
   }
-
+  @Public()
   async register(registerAuthDto: RegisterAuthDto): Promise<IAuthRespose> {
     const { email, password } = registerAuthDto;
     const userExist = await this.userService.findOneByEmail(email);
@@ -77,10 +82,12 @@ export class AuthService {
 
     const user = await this.userService.create(registerAuthDto);
 
+    const role = getRole(user.idType);
+
     const payload = {
       id: user.id,
       email: user.email,
-      type: user.idType,
+      role: role,
     };
 
     const token = await this.jwtService.sign(payload, {

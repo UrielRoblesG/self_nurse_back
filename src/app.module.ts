@@ -12,6 +12,10 @@ import { CatRelationshipEntity } from './database/entities/cat.relationship.enit
 import { CaregiverEntity } from './database/entities/caregiver.entity';
 import { CatPatientStatusEntity } from './database/entities/cat.patient.status.entity';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './modules/auth/guard/auth.guard';
+import { JwtService } from '@nestjs/jwt';
+import { RoleGuard } from './modules/role/guard/role.guard';
 
 @Module({
   imports: [
@@ -39,6 +43,18 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard,
+    },
+    JwtService,
+  ],
+  exports: [JwtService],
 })
 export class AppModule {}

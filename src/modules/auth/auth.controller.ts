@@ -15,12 +15,14 @@ import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('Authentication')
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('/login')
   async login(@Res() res: Response, @Body() loginAuthDto: LoginAuthDto) {
     try {
@@ -33,6 +35,7 @@ export class AuthController {
     }
   }
 
+  @Public()
   @Post('/register')
   async register(
     @Res() res: Response,
