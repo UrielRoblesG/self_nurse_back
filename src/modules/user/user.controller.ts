@@ -13,7 +13,6 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Logger } from '@nestjs/common';
 import { Response } from 'express';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -22,7 +21,7 @@ import { AuthGuard } from '../auth/guard/auth.guard';
 
 @ApiTags('User')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(AuthGuard)
 @Controller('api/user')
 export class UserController {
   private readonly logger = new Logger();

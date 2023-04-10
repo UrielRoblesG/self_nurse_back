@@ -1,25 +1,28 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   Res,
+  Req,
+  UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateAuthDto } from './dto/create-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { Public } from 'src/common/decorators/public.decorator';
+import { HttpStatus } from '@nestjs/common';
+import { AuthGuard } from './guard/auth.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Authentication')
 @Controller('api/auth')
 export class AuthController {
+  private readonly logger = new Logger();
+
   constructor(private readonly authService: AuthService) {}
 
   @Public()
@@ -48,6 +51,21 @@ export class AuthController {
     } catch (error) {
       console.log(error);
       return res.json(error);
+    }
+  }
+
+  @Post('/logout')
+  @Roles(Role.Admin, Role.Patient, Role.Doctor, Role.Caregiver)
+  @UseGuards(AuthGuard)
+  async logout(@Res() res: Response, @Req() req: Request) {
+    try {
+      const { user } = req;
+      await this.authService.logout(user);
+
+      return res.status(HttpStatus.OK).json({ msg: 'Operación exitosa' });
+    } catch (error) {
+      console.log(`Error: ${error}`);
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: error });
     }
   }
 }

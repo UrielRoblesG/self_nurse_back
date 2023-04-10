@@ -51,13 +51,27 @@ export class UserService {
     }
   }
   async findOneByEmail(email: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({ email: email });
+    const user = await this.userRepository.findOneBy({
+      email: email,
+      deletedAt: null,
+    });
 
     return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
+  }
+
+  async save(user: UserEntity): Promise<boolean> {
+    try {
+      const resp = await this.userRepository.save(user);
+
+      return resp !== null ? true : false;
+    } catch (error) {
+      this.logger.error(error);
+      return false;
+    }
   }
 
   async remove(id: number): Promise<boolean> {

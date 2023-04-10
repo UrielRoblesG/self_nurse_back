@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserEntity } from 'src/database/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,6 +19,7 @@ import { JwtConstant } from './jwt.constant';
 import { ConfigService } from '@nestjs/config';
 import { Public } from 'src/common/decorators/public.decorator';
 import { getRole } from 'src/common/enums/role.enum';
+import { IJwtPayload } from 'src/common/interfaces/interface.jwt.payload';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +30,6 @@ export class AuthService {
     private readonly configServie: ConfigService,
   ) {}
 
-  @Public()
   async login(user: LoginAuthDto): Promise<IAuthRespose> {
     const { password } = user;
 
@@ -64,7 +70,7 @@ export class AuthService {
       user: User.fromUserEntity(findUser),
     };
   }
-  @Public()
+
   async register(registerAuthDto: RegisterAuthDto): Promise<IAuthRespose> {
     const { email, password } = registerAuthDto;
     const userExist = await this.userService.findOneByEmail(email);
@@ -100,5 +106,18 @@ export class AuthService {
       token: token,
       user: u,
     };
+  }
+
+  async logout(user: any): Promise<boolean> {
+    const exist = await this.userService.findOneByEmail(user.email);
+
+    if (!exist) {
+      throw new NotFoundException('No existe una cuenta asociada a este email');
+    }
+
+    exist.isActive = false;
+    const resp = await this.userService.save(exist);
+
+    return resp;
   }
 }
