@@ -55,7 +55,7 @@ export class AuthController {
   }
 
   @Post('/logout')
-  @Roles(Role.Admin, Role.Patient, Role.Doctor, Role.Caregiver)
+  // @Roles(Role.Admin, Role.Patient, Role.Doctor, Role.Caregiver)
   @UseGuards(AuthGuard)
   async logout(@Res() res: Response, @Req() req: Request) {
     try {

@@ -48,6 +48,9 @@ export class UserEntity {
   @Column({ default: true })
   isActive: boolean;
 
+  @Column({ nullable: true, default: '' })
+  token: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;
 

@@ -51,22 +51,25 @@ export class AuthService {
       );
     }
 
-    const role = getRole(findUser.idType);
+    findUser.isActive = true;
+    await this.userService.save(findUser);
 
-    const payload = {
-      id: findUser.id,
-      email: findUser.email,
-      role: role,
-    };
+    // const role = getRole(findUser.idType);
 
-    const token = await this.jwtService.sign(payload, {
-      secret: this.configServie.get<string>('JWT_SECRET_KEY'),
-      expiresIn: '99y',
-    });
+    // const payload = {
+    //   id: findUser.id,
+    //   email: findUser.email,
+    //   role: role,
+    // };
+
+    // const token = await this.jwtService.sign(payload, {
+    //   secret: this.configServie.get<string>('JWT_SECRET_KEY'),
+    //   expiresIn: '99y',
+    // });
 
     return {
       msg: 'Operación exitosa',
-      token,
+      token: findUser.token,
       user: User.fromUserEntity(findUser),
     };
   }
@@ -100,6 +103,10 @@ export class AuthService {
       secret: this.configServie.get<string>('JWT_SECRET_KEY'),
       expiresIn: '99y',
     });
+
+    user.token = token;
+    await this.userService.save(user);
+
     const u = User.fromUserEntity(user);
     return {
       msg: 'Operación exitosa',
