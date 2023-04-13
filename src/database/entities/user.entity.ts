@@ -41,8 +41,8 @@ export class UserEntity {
   @Column({ nullable: false, name: 'pswrd' })
   password: string;
 
-  @ManyToOne(() => CatUserType)
-  @Column({ nullable: false })
+  @ManyToOne(() => CatUserType, { cascade: true })
+  @Column({ nullable: false, name: 'idTypeId' })
   idType: number;
 
   @Column({ default: true })

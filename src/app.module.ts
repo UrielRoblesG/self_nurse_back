@@ -1,3 +1,5 @@
+import { PatientStatusService } from './modules/admin/patient.status/patient.status.service';
+import { PatientStatusModule } from './modules/admin/patient.status/patient.status.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -16,11 +18,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/auth/guard/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { RoleGuard } from './modules/role/guard/role.guard';
+import { RoleModule } from './modules/role/role.module';
+import { RelationshipModule } from './modules/admin/relationship/relationship.module';
 
 @Module({
   imports: [
+    PatientStatusModule,
     AuthModule,
     UserModule,
+    RoleModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -41,6 +47,7 @@ import { RoleGuard } from './modules/role/guard/role.guard';
       autoLoadEntities: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
+    RelationshipModule,
   ],
   controllers: [AppController],
   providers: [

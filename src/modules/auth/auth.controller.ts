@@ -17,6 +17,7 @@ import { HttpStatus } from '@nestjs/common';
 import { AuthGuard } from './guard/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
+import { IJwtPayload } from 'src/common/interfaces/interface.jwt.payload';
 
 @ApiTags('Authentication')
 @Controller('api/auth')
@@ -55,7 +56,6 @@ export class AuthController {
   }
 
   @Post('/logout')
-  // @Roles(Role.Admin, Role.Patient, Role.Doctor, Role.Caregiver)
   @UseGuards(AuthGuard)
   async logout(@Res() res: Response, @Req() req: Request) {
     try {
@@ -66,6 +66,26 @@ export class AuthController {
     } catch (error) {
       console.log(`Error: ${error}`);
       return res.status(HttpStatus.BAD_REQUEST).json({ error: error });
+    }
+  }
+
+  @Post()
+  @UseGuards(AuthGuard)
+  async getUser(@Res() res: Response, @Req() req: Request) {
+    try {
+      const data = req.user as IJwtPayload;
+      const user = await this.authService.getUser(data.email);
+
+      return res.status(HttpStatus.OK).json({
+        msg: 'Operación exitosa',
+        data: user,
+      });
+    } catch (error) {
+      this.logger.error(error);
+
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        msg: 'Error en el servidor',
+      });
     }
   }
 }

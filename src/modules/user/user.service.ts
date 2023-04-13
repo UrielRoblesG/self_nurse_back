@@ -2,8 +2,19 @@ import { Injectable, Logger } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/database/entities/user.entity';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+
+import { PatientEntity } from 'src/database/entities/patient.entity';
+import { IUser } from 'src/common/interfaces/interface.user';
+import { CaregiverEntity } from 'src/database/entities/caregiver.entity';
+import { DoctorEntity } from 'src/database/entities/doctor.entity';
+import { RelationshipService } from '../admin/relationship/relationship.service';
+import { PatientStatusService } from '../admin/patient.status/patient.status.service';
+import { getRole } from 'src/common/enums/role.enum';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { User } from 'src/models/user';
+import { Encrypt } from 'src/utils/encrypt';
 
 @Injectable()
 export class UserService {
@@ -12,14 +23,90 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+
+    @InjectRepository(PatientEntity)
+    private readonly patientRepository: Repository<PatientEntity>,
+
+    @InjectRepository(CaregiverEntity)
+    private readonly caregiverRepository: Repository<CaregiverEntity>,
+
+    @InjectRepository(DoctorEntity)
+    private readonly doctorRepository: Repository<DoctorEntity>,
+
+    private readonly relationshipService: RelationshipService,
+
+    private readonly PatientStatusService: PatientStatusService,
+
+    private readonly jwtService: JwtService,
+
+    private readonly configService: ConfigService,
   ) {}
 
-  async create(createUserDto: User): Promise<UserEntity> {
+  async create(createUserDto: IUser): Promise<User> {
     try {
-      const user = this.createUser(createUserDto);
-      const resp = await this.userRepository.save(user);
+      const { password } = createUserDto;
+      const passwordHash = await Encrypt.hash(password);
 
-      return resp;
+      createUserDto = { ...createUserDto, password: passwordHash };
+      let resp: any;
+      switch (createUserDto.type) {
+        case 1:
+          const { paciente } = createUserDto;
+          const patientStatus =
+            await this.PatientStatusService.getPatientStatus(paciente.estado);
+          const pat = this.patientRepository.create({
+            age: paciente.edad,
+            bloodType: paciente.tipoSangre,
+            gender: paciente.genero,
+            height: paciente.altura,
+            idStatus: patientStatus,
+            weight: paciente.peso,
+          });
+
+          resp = await this.createUserPaciente(createUserDto, pat);
+
+          break;
+        case 2:
+          const { cuidador } = createUserDto;
+          const relacion = await this.relationshipService.findOne(
+            cuidador.relacion,
+          );
+
+          const care = this.caregiverRepository.create({
+            relationship: relacion,
+          });
+          resp = await this.createUserCaregiver(createUserDto, care);
+          break;
+        case 3:
+          const { doctor } = createUserDto;
+          const docEntity = await this.doctorRepository.create({
+            idm: doctor.cedula,
+          });
+          resp = await this.createUserDoctor(createUserDto, docEntity);
+        case 4:
+          break;
+        default:
+          break;
+      }
+
+      const role = getRole(resp.idType);
+
+      const payload = {
+        id: resp.id,
+        email: resp.email,
+        role: role,
+      };
+
+      const token = await this.jwtService.sign(payload, {
+        secret: this.configService.get<string>('JWT_SECRET_KEY'),
+        expiresIn: '99y',
+      });
+
+      resp.token = token;
+
+      this.userRepository.save(resp);
+
+      return User.fromUserEntity(resp);
     } catch (error) {
       console.log(error);
     }
@@ -84,7 +171,10 @@ export class UserService {
     return true;
   }
 
-  private createUser(object: User): UserEntity {
+  private async createUserPaciente(
+    object: IUser,
+    paciente: PatientEntity,
+  ): Promise<UserEntity> {
     const user = this.userRepository.create({
       name: object.name,
       firstName: object.firstName,
@@ -92,7 +182,41 @@ export class UserService {
       idType: object.type,
       email: object.email,
       password: object.password,
+      paciente,
     });
-    return user;
+    return await this.userRepository.save(user);
+  }
+
+  private async createUserCaregiver(
+    user: IUser,
+    caregiver: CaregiverEntity,
+  ): Promise<UserEntity> {
+    const u = this.userRepository.create({
+      name: user.name,
+      firstName: user.firstName,
+      secondLastName: user.secondLastName,
+      idType: user.type,
+      email: user.email,
+      password: user.password,
+      caregiver: caregiver,
+    });
+    return await this.userRepository.save(u);
+  }
+
+  private async createUserDoctor(
+    user: IUser,
+    doctor: DoctorEntity,
+  ): Promise<UserEntity> {
+    const u = this.userRepository.create({
+      name: user.name,
+      firstName: user.firstName,
+      secondLastName: user.secondLastName,
+      idType: user.type,
+      email: user.email,
+      password: user.password,
+      doctor: doctor,
+    });
+
+    return await this.userRepository.save(u);
   }
 }

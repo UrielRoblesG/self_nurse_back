@@ -15,11 +15,8 @@ import { IAuthRespose } from 'src/common/interfaces/interface.auth.response';
 import { User } from '../../models/user';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { UserService } from '../user/user.service';
-import { JwtConstant } from './jwt.constant';
 import { ConfigService } from '@nestjs/config';
-import { Public } from 'src/common/decorators/public.decorator';
 import { getRole } from 'src/common/enums/role.enum';
-import { IJwtPayload } from 'src/common/interfaces/interface.jwt.payload';
 
 @Injectable()
 export class AuthService {
@@ -54,22 +51,8 @@ export class AuthService {
     findUser.isActive = true;
     await this.userService.save(findUser);
 
-    // const role = getRole(findUser.idType);
-
-    // const payload = {
-    //   id: findUser.id,
-    //   email: findUser.email,
-    //   role: role,
-    // };
-
-    // const token = await this.jwtService.sign(payload, {
-    //   secret: this.configServie.get<string>('JWT_SECRET_KEY'),
-    //   expiresIn: '99y',
-    // });
-
     return {
       msg: 'Operación exitosa',
-      token: findUser.token,
       user: User.fromUserEntity(findUser),
     };
   }
@@ -88,30 +71,13 @@ export class AuthService {
     const passwordHash = await Encrypt.hash(password);
 
     registerAuthDto = { ...registerAuthDto, password: passwordHash };
+    // TODO: Pensar como resolver esto
 
     const user = await this.userService.create(registerAuthDto);
 
-    const role = getRole(user.idType);
-
-    const payload = {
-      id: user.id,
-      email: user.email,
-      role: role,
-    };
-
-    const token = await this.jwtService.sign(payload, {
-      secret: this.configServie.get<string>('JWT_SECRET_KEY'),
-      expiresIn: '99y',
-    });
-
-    user.token = token;
-    await this.userService.save(user);
-
-    const u = User.fromUserEntity(user);
     return {
       msg: 'Operación exitosa',
-      token: token,
-      user: u,
+      user,
     };
   }
 
@@ -126,5 +92,17 @@ export class AuthService {
     const resp = await this.userService.save(exist);
 
     return resp;
+  }
+
+  async getUser(email: any): Promise<User> {
+    const userEntity = await this.userService.findOneByEmail(email);
+
+    if (!userEntity) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    const user = User.fromUserEntity(userEntity);
+
+    return user;
   }
 }

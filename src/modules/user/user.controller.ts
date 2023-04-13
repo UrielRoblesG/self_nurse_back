@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -29,8 +30,20 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Res() res: Response, @Body() createUserDto: CreateUserDto) {
+    try {
+      const resp = await this.userService.create(createUserDto);
+
+      return res.status(HttpStatus.OK).json({
+        msg: 'Operación exitosa',
+        data: resp,
+      });
+    } catch (error) {
+      this.logger.error(error);
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ msg: 'Error: contracte con el administrador' });
+    }
   }
 
   @Get()

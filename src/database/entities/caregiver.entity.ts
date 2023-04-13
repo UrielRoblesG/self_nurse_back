@@ -3,9 +3,9 @@ import { CatRelationshipEntity } from './cat.relationship.enity';
 
 @Entity({ name: 'cuidador' })
 export class CaregiverEntity {
-  @PrimaryGeneratedColumn('identity')
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @ManyToOne(() => CatRelationshipEntity)
+  @ManyToOne(() => CatRelationshipEntity, { cascade: true })
   relationship: CatRelationshipEntity;
 }

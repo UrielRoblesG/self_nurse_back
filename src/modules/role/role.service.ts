@@ -3,7 +3,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatUserType } from 'src/database/entities/cat.user.type';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 
 @Injectable()
 export class RoleService {
@@ -16,8 +16,25 @@ export class RoleService {
     return 'This action adds a new role';
   }
 
-  findAll() {
-    return `This action returns all role`;
+  async findAll(): Promise<CatUserType[]> {
+    const categorias = await this.catUserTypeRepository.find({
+      where: { id: Not(4) },
+    });
+
+    if (categorias.length == 0) {
+      throw new Error('Error al obtener las categorias');
+    }
+
+    return categorias;
+  }
+  async findAllAdmin(): Promise<CatUserType[]> {
+    const categorias = await this.catUserTypeRepository.find({});
+
+    if (categorias.length == 0) {
+      throw new Error('Error al obtener las categorias');
+    }
+
+    return categorias;
   }
 
   findOne(id: number) {

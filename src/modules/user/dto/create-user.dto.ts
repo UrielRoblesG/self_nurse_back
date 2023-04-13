@@ -1,6 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsInt, IsNotEmpty, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  MinLength,
+} from 'class-validator';
 import { IUser } from 'src/common/interfaces/interface.user';
+import { CreatePatientDto } from './create-patient.dto';
+import { CreateDoctorDto } from './crete-doctor.dto';
+import { CreateCaregiverDto } from './create-caregiver.dto';
 
 export class CreateUserDto implements IUser {
   id?: number;
@@ -29,15 +38,16 @@ export class CreateUserDto implements IUser {
   @IsInt()
   type: number;
 
-  @ApiProperty()
   @IsNotEmpty()
-  patient?: any;
+  @IsNumber()
+  edad: number;
 
   @ApiProperty()
-  @IsNotEmpty()
-  caregiver?: any;
+  patient?: CreatePatientDto;
 
   @ApiProperty()
-  @IsNotEmpty()
-  doctor?: any;
+  caregiver?: CreateCaregiverDto;
+
+  @ApiProperty()
+  doctor?: CreateDoctorDto;
 }

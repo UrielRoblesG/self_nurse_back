@@ -1,3 +1,7 @@
+import { CreateCaregiverDto } from 'src/modules/user/dto/create-caregiver.dto';
+import { CreatePatientDto } from 'src/modules/user/dto/create-patient.dto';
+import { CreateDoctorDto } from 'src/modules/user/dto/crete-doctor.dto';
+
 export interface IUser {
   id?: number;
   name: string;
@@ -6,4 +10,7 @@ export interface IUser {
   email: string;
   password?: string;
   type: number;
+  paciente?: CreatePatientDto;
+  cuidador?: CreateCaregiverDto;
+  doctor?: CreateDoctorDto;
 }

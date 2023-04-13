@@ -18,6 +18,9 @@ export class PatientEntity {
   @Column({ name: 'altura' })
   height: number;
 
+  @Column({ name: 'peso' })
+  weight: number;
+
   @ManyToOne(() => CatPatientStatusEntity)
   idStatus: CatPatientStatusEntity;
 }
