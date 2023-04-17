@@ -5,27 +5,21 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { UserEntity } from 'src/database/entities/user.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Encrypt } from 'src/utils/encrypt';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { IAuthRespose } from 'src/common/interfaces/interface.auth.response';
-import { User } from '../../models/user';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { UserService } from '../user/user.service';
 import { ConfigService } from '@nestjs/config';
-import { getRole } from 'src/common/enums/role.enum';
+import { Paciente } from 'src/models/paciente';
+import { Cuidador } from 'src/models/cuidador';
+import { Doctor } from 'src/models/doctor';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger();
-  constructor(
-    private readonly userService: UserService,
-    private readonly jwtService: JwtService,
-    private readonly configServie: ConfigService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   async login(user: LoginAuthDto): Promise<IAuthRespose> {
     const { password } = user;
@@ -51,9 +45,28 @@ export class AuthService {
     findUser.isActive = true;
     await this.userService.save(findUser);
 
+    var usuario: any;
+
+    switch (findUser.idType) {
+      case 1:
+        usuario = Paciente.fromUserEntity(findUser);
+        break;
+      case 2:
+        usuario = Cuidador.fromUserEntity(findUser);
+        break;
+      case 3:
+        usuario = Doctor.fromUserEntity(findUser);
+        break;
+      case 4:
+        //TODO: Not implemented yet
+        break;
+      default:
+        break;
+    }
+
     return {
       msg: 'Operación exitosa',
-      user: User.fromUserEntity(findUser),
+      user: usuario,
     };
   }
 
@@ -67,11 +80,6 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    const passwordHash = await Encrypt.hash(password);
-
-    registerAuthDto = { ...registerAuthDto, password: passwordHash };
-    // TODO: Pensar como resolver esto
 
     const user = await this.userService.create(registerAuthDto);
 
@@ -94,15 +102,15 @@ export class AuthService {
     return resp;
   }
 
-  async getUser(email: any): Promise<User> {
+  async getUser(email: any): Promise<any> {
     const userEntity = await this.userService.findOneByEmail(email);
 
     if (!userEntity) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
-    const user = User.fromUserEntity(userEntity);
+    // const user = User.fromUserEntity(userEntity);
 
-    return user;
+    // return user;
   }
 }

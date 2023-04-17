@@ -35,6 +35,9 @@ export class CreateUserDto implements IUser {
   password: string;
 
   @ApiProperty()
+  status?: boolean;
+
+  @ApiProperty()
   @IsInt()
   type: number;
 
@@ -43,11 +46,13 @@ export class CreateUserDto implements IUser {
   edad: number;
 
   @ApiProperty()
-  patient?: CreatePatientDto;
+  paciente?: CreatePatientDto;
 
   @ApiProperty()
-  caregiver?: CreateCaregiverDto;
+  cuidador?: CreateCaregiverDto;
 
   @ApiProperty()
   doctor?: CreateDoctorDto;
+
+  token: string;
 }

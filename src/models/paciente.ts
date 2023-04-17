@@ -1,5 +1,4 @@
 import { IUser } from 'src/common/interfaces/interface.user';
-import { CatPacienteEstatus } from './cat.paciente.estatus';
 import { UserEntity } from 'src/database/entities/user.entity';
 
 export class Paciente implements IUser {
@@ -9,55 +8,63 @@ export class Paciente implements IUser {
   secondLastName: string;
   email: string;
   password?: string;
+  status: boolean;
   type: number;
+  token: string;
+  genero: string;
   edad: number;
-  tipoDeSangre: string;
-  peso: number;
-  altura: number;
-  estado: any;
+  bloodType: string;
+  height: number;
+  weight: number;
 
   constructor(
-    id: number = 0,
+    id: number,
     name: string,
     firstName: string,
-    secondName: string,
+    secondLastName: string,
     email: string,
-    password: string = '',
+    password = '',
+    status: boolean,
     type: number,
+    token: string,
+    genero: string,
     edad: number,
-    tipoDeSangre: string,
-    peso: number,
-    altura: number,
-    estado: any,
+    bloodType: string,
+    height: number,
+    weight: number,
   ) {
     this.id = id;
     this.name = name;
     this.firstName = firstName;
-    this.secondLastName = secondName;
+    this.secondLastName = secondLastName;
     this.email = email;
     this.password = password;
+    this.status = status;
     this.type = type;
+    this.token = token;
+    this.genero = genero;
     this.edad = edad;
-    this.tipoDeSangre = tipoDeSangre;
-    this.peso = peso;
-    this.altura = altura;
-    this.estado = estado;
+    this.bloodType = bloodType;
+    this.height = height;
+    this.weight = weight;
   }
 
-  static fromUserEntity(object: UserEntity): Paciente {
+  static fromUserEntity(entity: UserEntity): Paciente {
     return new Paciente(
-      object.id,
-      object.name,
-      object.firstName,
-      object.secondLastName,
-      object.email,
+      entity.id,
+      entity.name,
+      entity.firstName,
+      entity.secondLastName,
+      entity.email,
       '',
-      object.idType,
-      object.paciente.age,
-      object.paciente.bloodType,
-      object.paciente.weight,
-      object.paciente.height,
-      object.paciente.idStatus,
+      entity.isActive,
+      entity.idType,
+      entity.token,
+      entity.paciente.gender,
+      entity.paciente.age,
+      entity.paciente.bloodType,
+      entity.paciente.height,
+      entity.paciente.weight,
     );
   }
 }

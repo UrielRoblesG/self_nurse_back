@@ -13,8 +13,12 @@ import { PatientStatusService } from '../admin/patient.status/patient.status.ser
 import { getRole } from 'src/common/enums/role.enum';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { User } from 'src/models/user';
 import { Encrypt } from 'src/utils/encrypt';
+import { CreateUserDto } from './dto/create-user.dto';
+import { RegisterAuthDto } from '../auth/dto/register-auth.dto';
+import { Doctor } from 'src/models/doctor';
+import { Cuidador } from 'src/models/cuidador';
+import { Paciente } from 'src/models/paciente';
 
 @Injectable()
 export class UserService {
@@ -42,7 +46,7 @@ export class UserService {
     private readonly configService: ConfigService,
   ) {}
 
-  async create(createUserDto: IUser): Promise<User> {
+  async create(createUserDto: CreateUserDto | RegisterAuthDto): Promise<IUser> {
     try {
       const { password } = createUserDto;
       const passwordHash = await Encrypt.hash(password);
@@ -83,6 +87,7 @@ export class UserService {
             idm: doctor.cedula,
           });
           resp = await this.createUserDoctor(createUserDto, docEntity);
+          break;
         case 4:
           break;
         default:
@@ -106,7 +111,26 @@ export class UserService {
 
       this.userRepository.save(resp);
 
-      return User.fromUserEntity(resp);
+      var user: any;
+
+      switch (resp.idType) {
+        case 1:
+          user = Paciente.fromUserEntity(resp);
+          break;
+        case 2:
+          user = Cuidador.fromUserEntity(resp);
+          break;
+        case 3:
+          user = Doctor.fromUserEntity(resp);
+          break;
+        case 4:
+          //TODO: Not implemented yet
+          break;
+        default:
+          break;
+      }
+
+      return user as IUser;
     } catch (error) {
       console.log(error);
     }
@@ -138,9 +162,16 @@ export class UserService {
     }
   }
   async findOneByEmail(email: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({
-      email: email,
-      deletedAt: null,
+    const user = await this.userRepository.findOne({
+      where: {
+        email: email,
+        deletedAt: null,
+      },
+      relations: {
+        doctor: true,
+        caregiver: true,
+        paciente: true,
+      },
     });
 
     return user;

@@ -9,8 +9,7 @@ export interface IUser {
   secondLastName: string;
   email: string;
   password?: string;
+  status?: boolean;
   type: number;
-  paciente?: CreatePatientDto;
-  cuidador?: CreateCaregiverDto;
-  doctor?: CreateDoctorDto;
+  token: string;
 }

@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt';
 
 export class Encrypt {
   static async hash(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt();
+    const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
     return hash;

@@ -19,6 +19,7 @@ import { Response } from 'express';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -29,6 +30,7 @@ export class UserController {
 
   constructor(private readonly userService: UserService) {}
 
+  @Roles(Role.Admin)
   @Post()
   async create(@Res() res: Response, @Body() createUserDto: CreateUserDto) {
     try {
@@ -51,6 +53,7 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOneById(+id);
