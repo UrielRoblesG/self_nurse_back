@@ -1,3 +1,4 @@
+import { PatientStatusController } from './modules/admin/patient.status/patient.status.controller';
 import { PatientStatusService } from './modules/admin/patient.status/patient.status.service';
 import { PatientStatusModule } from './modules/admin/patient.status/patient.status.module';
 import { Module } from '@nestjs/common';
@@ -49,7 +50,7 @@ import { RelationshipModule } from './modules/admin/relationship/relationship.mo
     ConfigModule.forRoot({ isGlobal: true }),
     RelationshipModule,
   ],
-  controllers: [AppController],
+  controllers: [PatientStatusController, AppController],
   providers: [
     AppService,
     {

@@ -19,7 +19,9 @@ import { AuthGuard } from 'src/modules/auth/guard/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { Public } from 'src/common/decorators/public.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Relacion cuidador')
 @Controller('/api/relationship')
 export class RelationshipController {
   private readonly logger = new Logger();

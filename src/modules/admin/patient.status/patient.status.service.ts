@@ -27,4 +27,18 @@ export class PatientStatusService {
       return;
     }
   }
+  async getAll(): Promise<CatPatientStatusEntity[]> {
+    try {
+      const status = await this.catPacienteEstatusRepository.find({});
+
+      if (!status) {
+        return null;
+      }
+
+      return status;
+    } catch (error) {
+      this.logger.error(error);
+      return;
+    }
+  }
 }

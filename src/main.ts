@@ -12,6 +12,9 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('User')
     .addTag('Authentication')
+    .addTag('Estado Paciente')
+    .addTag('Relacion cuidador')
+    .addTag('Roles')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
@@ -13,13 +12,14 @@ import {
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Public } from 'src/common/decorators/public.decorator';
 import { Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Roles')
 @Controller('api/role')
 export class RoleController {
   private readonly logger = new Logger();
@@ -32,8 +32,8 @@ export class RoleController {
     return this.roleService.create(createRoleDto);
   }
 
-  @Get()
   @Public()
+  @Get()
   async findRoles(@Res() res: Response) {
     try {
       const resp = await this.roleService.findAll();
@@ -49,6 +49,7 @@ export class RoleController {
       });
     }
   }
+
   @Get('admin')
   @Roles(Role.Admin)
   async findRolesAdmin(@Res() res: Response) {
