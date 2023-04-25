@@ -38,6 +38,13 @@ export class UserEntity {
   })
   email: string;
 
+  @Column({
+    nullable: false,
+    name: 'phone',
+    length: 10,
+  })
+  phone: string;
+
   @Column({ nullable: false, name: 'pswrd' })
   password: string;
 

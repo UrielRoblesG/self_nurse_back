@@ -35,6 +35,10 @@ export class CreateUserDto implements IUser {
   password: string;
 
   @ApiProperty()
+  @MinLength(10)
+  phone: string;
+
+  @ApiProperty()
   status?: boolean;
 
   @ApiProperty()

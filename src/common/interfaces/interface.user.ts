@@ -10,6 +10,7 @@ export interface IUser {
   email: string;
   password?: string;
   status?: boolean;
+  phone: string;
   type: number;
   token: string;
 }

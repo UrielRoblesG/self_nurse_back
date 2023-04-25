@@ -35,15 +35,15 @@ export class RegisterAuthDto implements IUser {
   password: string;
 
   @ApiProperty()
+  @MinLength(10)
+  phone: string;
+
+  @ApiProperty()
   status?: boolean;
 
   @ApiProperty()
   @IsInt()
   type: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  edad: number;
 
   @ApiProperty()
   paciente?: CreatePatientDto;

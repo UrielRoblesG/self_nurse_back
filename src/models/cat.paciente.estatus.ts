@@ -2,13 +2,13 @@ import { CatPatientStatusEntity } from 'src/database/entities/cat.patient.status
 
 export class CatPacienteEstatus {
   id: number;
-  nombre: string;
-  descripcion: string;
+  name: string;
+  description: string;
 
   constructor(id: number, name: string, description: string) {
     this.id = id;
-    this.nombre = name;
-    this.descripcion = description;
+    this.name = name;
+    this.description = description;
   }
 
   static FromPatientEntity(entity: CatPatientStatusEntity): CatPacienteEstatus {

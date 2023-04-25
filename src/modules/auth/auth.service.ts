@@ -15,6 +15,7 @@ import { ConfigService } from '@nestjs/config';
 import { Paciente } from 'src/models/paciente';
 import { Cuidador } from 'src/models/cuidador';
 import { Doctor } from 'src/models/doctor';
+import { User } from 'src/models/user';
 
 @Injectable()
 export class AuthService {
@@ -49,13 +50,13 @@ export class AuthService {
 
     switch (findUser.idType) {
       case 1:
-        usuario = Paciente.fromUserEntity(findUser);
+        usuario = new User(findUser);
         break;
       case 2:
-        usuario = Cuidador.fromUserEntity(findUser);
+        usuario = new User(findUser);
         break;
       case 3:
-        usuario = Doctor.fromUserEntity(findUser);
+        usuario = new User(findUser);
         break;
       case 4:
         //TODO: Not implemented yet
@@ -71,7 +72,7 @@ export class AuthService {
   }
 
   async register(registerAuthDto: RegisterAuthDto): Promise<IAuthRespose> {
-    const { email, password } = registerAuthDto;
+    const { email } = registerAuthDto;
     const userExist = await this.userService.findOneByEmail(email);
 
     if (userExist !== null) {

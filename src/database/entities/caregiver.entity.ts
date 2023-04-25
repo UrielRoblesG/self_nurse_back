@@ -6,6 +6,6 @@ export class CaregiverEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @ManyToOne(() => CatRelationshipEntity, { cascade: true })
+  @ManyToOne(() => CatRelationshipEntity, { cascade: true, eager: true })
   relationship: CatRelationshipEntity;
 }

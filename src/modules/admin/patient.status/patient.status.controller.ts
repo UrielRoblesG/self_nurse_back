@@ -13,6 +13,7 @@ import { PatientStatusService } from './patient.status.service';
 export class PatientStatusController {
   private readonly logger = new Logger();
   constructor(private readonly patientStatusService: PatientStatusService) {}
+
   @Get()
   @Public()
   async getStatus(@Res() res: Response) {

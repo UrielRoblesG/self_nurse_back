@@ -19,6 +19,7 @@ import { RegisterAuthDto } from '../auth/dto/register-auth.dto';
 import { Doctor } from 'src/models/doctor';
 import { Cuidador } from 'src/models/cuidador';
 import { Paciente } from 'src/models/paciente';
+import { User } from 'src/models/user';
 
 @Injectable()
 export class UserService {
@@ -53,6 +54,7 @@ export class UserService {
 
       createUserDto = { ...createUserDto, password: passwordHash };
       let resp: any;
+
       switch (createUserDto.type) {
         case 1:
           const { paciente } = createUserDto;
@@ -68,22 +70,22 @@ export class UserService {
           });
 
           resp = await this.createUserPaciente(createUserDto, pat);
-
           break;
+
         case 2:
           const { cuidador } = createUserDto;
           const relacion = await this.relationshipService.findOne(
             cuidador.relacion,
           );
-
           const care = this.caregiverRepository.create({
             relationship: relacion,
           });
           resp = await this.createUserCaregiver(createUserDto, care);
           break;
+
         case 3:
           const { doctor } = createUserDto;
-          const docEntity = await this.doctorRepository.create({
+          const docEntity = this.doctorRepository.create({
             idm: doctor.cedula,
           });
           resp = await this.createUserDoctor(createUserDto, docEntity);
@@ -111,26 +113,9 @@ export class UserService {
 
       this.userRepository.save(resp);
 
-      var user: any;
+      const user = new User(resp);
 
-      switch (resp.idType) {
-        case 1:
-          user = Paciente.fromUserEntity(resp);
-          break;
-        case 2:
-          user = Cuidador.fromUserEntity(resp);
-          break;
-        case 3:
-          user = Doctor.fromUserEntity(resp);
-          break;
-        case 4:
-          //TODO: Not implemented yet
-          break;
-        default:
-          break;
-      }
-
-      return user as IUser;
+      return user;
     } catch (error) {
       console.log(error);
     }
@@ -213,6 +198,7 @@ export class UserService {
       idType: object.type,
       email: object.email,
       password: object.password,
+      phone: object.phone,
       paciente,
     });
     return await this.userRepository.save(user);
@@ -229,6 +215,7 @@ export class UserService {
       idType: user.type,
       email: user.email,
       password: user.password,
+      phone: user.phone,
       caregiver: caregiver,
     });
     return await this.userRepository.save(u);
@@ -245,6 +232,7 @@ export class UserService {
       idType: user.type,
       email: user.email,
       password: user.password,
+      phone: user.phone,
       doctor: doctor,
     });
 

@@ -1,70 +1,33 @@
 import { IUser } from 'src/common/interfaces/interface.user';
+import { PatientEntity } from 'src/database/entities/patient.entity';
 import { UserEntity } from 'src/database/entities/user.entity';
+import { CatPacienteEstatus } from './cat.paciente.estatus';
 
-export class Paciente implements IUser {
+export class Paciente {
   id?: number;
-  name: string;
-  firstName: string;
-  secondLastName: string;
-  email: string;
-  password?: string;
-  status: boolean;
-  type: number;
-  token: string;
   genero: string;
   edad: number;
   bloodType: string;
   height: number;
   weight: number;
+  phone: string;
+  status: CatPacienteEstatus;
 
-  constructor(
-    id: number,
-    name: string,
-    firstName: string,
-    secondLastName: string,
-    email: string,
-    password = '',
-    status: boolean,
-    type: number,
-    token: string,
-    genero: string,
-    edad: number,
-    bloodType: string,
-    height: number,
-    weight: number,
-  ) {
+  constructor({
+    id,
+    gender,
+    age,
+    bloodType,
+    height,
+    weight,
+    idStatus,
+  }: PatientEntity) {
     this.id = id;
-    this.name = name;
-    this.firstName = firstName;
-    this.secondLastName = secondLastName;
-    this.email = email;
-    this.password = password;
-    this.status = status;
-    this.type = type;
-    this.token = token;
-    this.genero = genero;
-    this.edad = edad;
+    this.genero = gender;
+    this.edad = age;
     this.bloodType = bloodType;
     this.height = height;
     this.weight = weight;
-  }
-
-  static fromUserEntity(entity: UserEntity): Paciente {
-    return new Paciente(
-      entity.id,
-      entity.name,
-      entity.firstName,
-      entity.secondLastName,
-      entity.email,
-      '',
-      entity.isActive,
-      entity.idType,
-      entity.token,
-      entity.paciente.gender,
-      entity.paciente.age,
-      entity.paciente.bloodType,
-      entity.paciente.height,
-      entity.paciente.weight,
-    );
+    this.status = CatPacienteEstatus.FromPatientEntity(idStatus);
   }
 }
