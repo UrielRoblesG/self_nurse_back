@@ -21,6 +21,6 @@ export class PatientEntity {
   @Column({ name: 'peso' })
   weight: number;
 
-  @ManyToOne(() => CatPatientStatusEntity)
+  @ManyToOne(() => CatPatientStatusEntity, { eager: true })
   idStatus: CatPatientStatusEntity;
 }
