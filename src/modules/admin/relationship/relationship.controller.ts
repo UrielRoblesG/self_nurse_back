@@ -52,8 +52,16 @@ export class RelationshipController {
 
   @Get()
   @Public()
-  findAll() {
-    return this.relationshipService.findAll();
+  async findAll(@Res() res: Response) {
+    try {
+      const resp = await this.relationshipService.findAll();
+
+      return res.status(HttpStatus.OK).json({
+        msg: 'Operacion exitosa',
+        count: resp.length,
+        data: resp,
+      });
+    } catch (error) {}
   }
 
   @Get(':id')

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { CreateRelationshipDto } from './dto/create-relationship.dto';
 import { UpdateRelationshipDto } from './dto/update-relationship.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class RelationshipService {
+  private readonly logger = new Logger();
   constructor(
     @InjectRepository(CatRelationshipEntity)
     private readonly catRelationshipRepository: Repository<CatRelationshipEntity>,
@@ -28,8 +29,18 @@ export class RelationshipService {
     return relationship;
   }
 
-  findAll() {
-    return `This action returns all relationship`;
+  async findAll(): Promise<CatRelationshipEntity[]> {
+    try {
+      const relationships = await this.catRelationshipRepository.find({});
+      this.logger.debug(relationships.length);
+      if (relationships.length == 0) {
+        throw new Error('No hay relaciones');
+      }
+
+      return relationships;
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 
   async findOne(id: number): Promise<CatRelationshipEntity> {
