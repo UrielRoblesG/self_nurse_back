@@ -59,7 +59,7 @@ export class RelationshipController {
       return res.status(HttpStatus.OK).json({
         msg: 'Operacion exitosa',
         count: resp.length,
-        data: resp,
+        items: resp,
       });
     } catch (error) {}
   }
