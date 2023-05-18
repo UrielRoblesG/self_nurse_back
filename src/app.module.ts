@@ -45,6 +45,6 @@ export class AppModule {
   static PORT: number;
 
   constructor(private readonly configService: ConfigService) {
-    AppModule.PORT = +configService.get('PORT');
+    AppModule.PORT = +this.configService.get('PORT');
   }
 }
