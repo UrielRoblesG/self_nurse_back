@@ -14,41 +14,25 @@ import { DoctorEntity } from './database/entities/doctor.entity';
 import { CatRelationshipEntity } from './database/entities/cat.relationship.enity';
 import { CaregiverEntity } from './database/entities/caregiver.entity';
 import { CatPatientStatusEntity } from './database/entities/cat.patient.status.entity';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/auth/guard/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { RoleGuard } from './modules/role/guard/role.guard';
 import { RoleModule } from './modules/role/role.module';
 import { RelationshipModule } from './modules/admin/relationship/relationship.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
     PatientStatusModule,
     AuthModule,
     UserModule,
     RoleModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'sa',
-      password: 'root',
-      database: 'self_nurse_db',
-      entities: [
-        UserEntity,
-        CatUserType,
-        PatientEntity,
-        DoctorEntity,
-        CaregiverEntity,
-        CatRelationshipEntity,
-        CatPatientStatusEntity,
-      ],
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
-    ConfigModule.forRoot({ isGlobal: true }),
     RelationshipModule,
+    DatabaseModule,
   ],
   controllers: [PatientStatusController, AppController],
   providers: [
@@ -65,4 +49,10 @@ import { RelationshipModule } from './modules/admin/relationship/relationship.mo
   ],
   exports: [JwtService],
 })
-export class AppModule {}
+export class AppModule {
+  static PORT: number;
+
+  constructor(private readonly configService: ConfigService) {
+    AppModule.PORT = +configService.get('PORT');
+  }
+}
