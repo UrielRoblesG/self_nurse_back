@@ -135,7 +135,10 @@ export class UserService {
 
   async findOneById(id: number): Promise<UserEntity> {
     try {
-      const user = await this.userRepository.findOneBy({ id: id });
+      const user = await this.userRepository.findOne({
+        where: { id: id, deletedAt: null },
+        relations: { doctor: true, caregiver: true, paciente: true },
+      });
 
       if (user === null) {
         throw new Error('No se encontro el registro');

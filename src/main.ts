@@ -6,12 +6,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('Sef Nurse Documentations')
+    .setTitle('Sef Nurse Documentation')
     .addBearerAuth()
     .setDescription('The Self Nurse API description')
     .setVersion('1.0')
-    .addTag('User')
-    .addTag('Authentication')
+    .addTag('Usuarios')
+    .addTag('Autenticacion')
     .addTag('Estado Paciente')
     .addTag('Relacion cuidador')
     .addTag('Roles')

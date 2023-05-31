@@ -15,11 +15,9 @@ import { RegisterAuthDto } from './dto/register-auth.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { HttpStatus } from '@nestjs/common';
 import { AuthGuard } from './guard/auth.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { Role } from 'src/common/enums/role.enum';
 import { IJwtPayload } from 'src/common/interfaces/interface.jwt.payload';
 
-@ApiTags('Authentication')
+@ApiTags('Autenticacion')
 @Controller('api/auth')
 export class AuthController {
   private readonly logger = new Logger();

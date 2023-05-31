@@ -9,6 +9,7 @@ import {
   UseGuards,
   Res,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,7 +22,7 @@ import { Role } from 'src/common/enums/role.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Public } from 'src/common/decorators/public.decorator';
 
-@ApiTags('User')
+@ApiTags('Usuarios')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('api/user')
@@ -57,6 +58,30 @@ export class UserController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOneById(+id);
+  }
+
+  @Roles(Role.Caregiver, Role.Doctor, Role.Patient, Role.Admin)
+  @Get('/token/:token')
+  async findOneByToken(
+    @Param('token') token: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ) {
+    try {
+      const payload = req['user'];
+      const user = await this.userService.findOneById(payload.id);
+
+      return res.status(HttpStatus.OK).send({
+        msg: 'Operacion exitosa',
+        user: user,
+      });
+    } catch (error) {
+      this.logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).send({
+        msg: 'Error al obtener usuario',
+        codigo: 400,
+      });
+    }
   }
 
   @Patch(':id')
