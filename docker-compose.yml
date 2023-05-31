@@ -8,14 +8,18 @@ services:
     environment:
       - JWT_SECRET_KEY=Ct0hqIlulr~~ecVa-z=y#Eu6.6]i]yyohPSLp!wQ2SxW'6.]_H
       - NODE_ENV=Development
-      - DB_HOST=localhost
+      - PORT=3000
+      - DB_HOST=mysqldb
       - DB_PORT=3306
-      - MYSQL_USER=root
       - DB_NAME=self_nurse_db
-      - MYSQL_PASSWORD=toor
       - DB_LOGGING=false
-  mysql:
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=toor
+  mysqldb:
     image: mysql:8.0.33-debian
+    restart: unless-stopped
+    ports:
+      - 3037:3036
     volumes:
       - D:\tmp\selfnurse-data:/var/lib/mysql
     environment:
