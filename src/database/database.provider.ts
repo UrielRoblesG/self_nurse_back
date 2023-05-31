@@ -15,8 +15,8 @@ export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
       type: 'mysql',
       host: config.get('DB_HOST'),
       port: +config.get('DB_PORT'),
-      username: config.get('DB_USER'),
-      password: config.get('DB_PASSWORD'),
+      username: config.get('MYSQL_USER'),
+      password: config.get('MYSQL_PASSWORD'),
       database: config.get('DB_NAME'),
       //   entities: [
       //     UserEntity,
