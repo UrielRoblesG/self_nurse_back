@@ -2,10 +2,10 @@ import { CatRelationshipEntity } from 'src/database/entities/cat.relationship.en
 
 export class CatRelationship {
   id: number;
-  relation: string;
+  name: string;
 
   constructor(relationship: CatRelationshipEntity) {
     this.id = relationship.id;
-    this.relation = relationship.name;
+    this.name = relationship.name;
   }
 }
