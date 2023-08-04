@@ -7,4 +7,7 @@ export class DoctorEntity {
 
   @Column({ name: 'cedula', length: 10 })
   idm: string;
+
+  @Column({ name: 'especialidad', length: 100 })
+  especialidad: string;
 }

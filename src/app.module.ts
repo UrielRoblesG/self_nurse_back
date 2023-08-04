@@ -14,6 +14,7 @@ import { RoleGuard } from './modules/role/guard/role.guard';
 import { RoleModule } from './modules/role/role.module';
 import { RelationshipModule } from './modules/admin/relationship/relationship.module';
 import { DatabaseModule } from './database/database.module';
+import { EventoModule } from './modules/evento/evento.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DatabaseModule } from './database/database.module';
     RoleModule,
     RelationshipModule,
     DatabaseModule,
+    EventoModule,
   ],
   controllers: [PatientStatusController, AppController],
   providers: [

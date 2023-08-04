@@ -6,14 +6,19 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CatUserType } from './cat.user.type';
-import { PatientEntity } from './patient.entity';
-import { DoctorEntity } from './doctor.entity';
-import { CaregiverEntity } from './caregiver.entity';
+
+import {
+  EventoEntity,
+  NurseEntity,
+  DoctorEntity,
+  PatientEntity,
+  CatUserType,
+} from './index';
 
 @Entity({ name: 'usuario' })
 export class UserEntity {
@@ -75,9 +80,9 @@ export class UserEntity {
   @JoinColumn()
   doctor: DoctorEntity;
 
-  @OneToOne(() => CaregiverEntity, { cascade: true })
+  @OneToOne(() => NurseEntity, { cascade: true })
   @JoinColumn()
-  caregiver: CaregiverEntity;
+  caregiver: NurseEntity;
 
   @AfterRemove()
   updateStatus() {

@@ -30,7 +30,7 @@ export class AuthController {
     try {
       const resp = await this.authService.login(loginAuthDto);
 
-      return res.json(resp);
+      return res.status(HttpStatus.OK).json(resp);
     } catch (error) {
       console.log(error);
       return res.json(error);

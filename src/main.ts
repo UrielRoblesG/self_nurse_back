@@ -12,6 +12,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Usuarios')
     .addTag('Autenticacion')
+    .addTag('Evento')
     .addTag('Estado Paciente')
     .addTag('Relacion cuidador')
     .addTag('Roles')

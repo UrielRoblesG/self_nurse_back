@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CatPatientStatusEntity } from './cat.patient.status.entity';
+import { EventoEntity } from './evento.entity';
 
 @Entity({ name: 'paciente' })
 export class PatientEntity {
@@ -23,4 +30,7 @@ export class PatientEntity {
 
   @ManyToOne(() => CatPatientStatusEntity, { eager: true })
   idStatus: CatPatientStatusEntity;
+
+  @OneToMany(() => EventoEntity, (e) => e.paciente)
+  eventos: EventoEntity[];
 }

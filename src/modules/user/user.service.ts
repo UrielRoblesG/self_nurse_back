@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 
 import { PatientEntity } from 'src/database/entities/patient.entity';
 import { IUser } from 'src/common/interfaces/interface.user';
-import { CaregiverEntity } from 'src/database/entities/caregiver.entity';
+import { NurseEntity } from 'src/database/entities/nurse.entity';
 import { DoctorEntity } from 'src/database/entities/doctor.entity';
 import { RelationshipService } from '../admin/relationship/relationship.service';
 import { PatientStatusService } from '../admin/patient.status/patient.status.service';
@@ -32,8 +32,8 @@ export class UserService {
     @InjectRepository(PatientEntity)
     private readonly patientRepository: Repository<PatientEntity>,
 
-    @InjectRepository(CaregiverEntity)
-    private readonly caregiverRepository: Repository<CaregiverEntity>,
+    @InjectRepository(NurseEntity)
+    private readonly nurseRepository: Repository<NurseEntity>,
 
     @InjectRepository(DoctorEntity)
     private readonly doctorRepository: Repository<DoctorEntity>,
@@ -73,13 +73,7 @@ export class UserService {
           break;
 
         case 2:
-          const { cuidador } = createUserDto;
-          const relacion = await this.relationshipService.findOne(
-            cuidador.relacion,
-          );
-          const care = this.caregiverRepository.create({
-            relationship: relacion,
-          });
+          const care = this.nurseRepository.create({});
           resp = await this.createUserCaregiver(createUserDto, care);
           break;
 
@@ -87,6 +81,7 @@ export class UserService {
           const { doctor } = createUserDto;
           const docEntity = this.doctorRepository.create({
             idm: doctor.cedula,
+            especialidad: doctor.especialidad,
           });
           resp = await this.createUserDoctor(createUserDto, docEntity);
           break;
@@ -209,7 +204,7 @@ export class UserService {
 
   private async createUserCaregiver(
     user: IUser,
-    caregiver: CaregiverEntity,
+    caregiver: NurseEntity,
   ): Promise<UserEntity> {
     const u = this.userRepository.create({
       name: user.name,

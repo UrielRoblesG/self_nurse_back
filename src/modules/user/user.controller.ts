@@ -21,6 +21,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Public } from 'src/common/decorators/public.decorator';
+import { User } from 'src/models/user';
 
 @ApiTags('Usuarios')
 @ApiBearerAuth()
@@ -70,10 +71,13 @@ export class UserController {
     try {
       const payload = req['user'];
       const user = await this.userService.findOneById(payload.id);
-
+      if (user == null) {
+        throw new Error('No se pudo obtener el usuario');
+      }
+      const userResponse = new User(user);
       return res.status(HttpStatus.OK).send({
         msg: 'Operacion exitosa',
-        user: user,
+        user: userResponse,
       });
     } catch (error) {
       this.logger.error(error);

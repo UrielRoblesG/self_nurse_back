@@ -6,4 +6,8 @@ export class CreateDoctorDto {
   @IsNotEmpty()
   @Length(10, 10)
   cedula: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  especialidad: string;
 }

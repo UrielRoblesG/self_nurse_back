@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { IUser } from 'src/common/interfaces/interface.user';
 import { CreatePatientDto } from './create-patient.dto';
-import { CreateDoctorDto } from './crete-doctor.dto';
+import { CreateDoctorDto } from './create-doctor.dto';
 import { CreateCaregiverDto } from './create-caregiver.dto';
 
 export class CreateUserDto implements IUser {

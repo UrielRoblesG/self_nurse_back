@@ -1,12 +1,10 @@
 import { CatRelationship } from './cat.relationship';
-import { CaregiverEntity } from 'src/database/entities/caregiver.entity';
+import { NurseEntity } from 'src/database/entities/nurse.entity';
 
 export class Cuidador {
   id?: number;
-  relation: CatRelationship;
 
-  constructor(caregiver: CaregiverEntity) {
+  constructor(caregiver: NurseEntity) {
     this.id = caregiver.id;
-    this.relation = new CatRelationship(caregiver.relationship);
   }
 }

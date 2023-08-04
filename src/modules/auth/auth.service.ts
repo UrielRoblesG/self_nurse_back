@@ -29,7 +29,7 @@ export class AuthService {
 
     if (!findUser) {
       throw new HttpException(
-        'El email ya esta registrado.',
+        'El email no esta registrado.',
         HttpStatus.NOT_FOUND,
       );
     }

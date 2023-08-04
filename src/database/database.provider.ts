@@ -2,7 +2,17 @@ import { DynamicModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Environment } from 'src/common/enums';
-import { ConnectionOptions } from 'typeorm';
+import {
+  UserEntity,
+  CatUserType,
+  PatientEntity,
+  DoctorEntity,
+  NurseEntity,
+  CatRelationshipEntity,
+  CatPatientStatusEntity,
+  EventoEntity,
+} from './entities/index';
+import { ConnectionOptions } from 'typeorm/connection/ConnectionOptions';
 
 export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
   inject: [ConfigService],
@@ -18,15 +28,16 @@ export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
       username: config.get('MYSQL_USER'),
       password: config.get('MYSQL_PASSWORD'),
       database: config.get('DB_NAME'),
-      //   entities: [
-      //     UserEntity,
-      //     CatUserType,
-      //     PatientEntity,
-      //     DoctorEntity,
-      //     CaregiverEntity,
-      //     CatRelationshipEntity,
-      //     CatPatientStatusEntity,
-      //   ],
+      entities: [
+        UserEntity,
+        CatUserType,
+        PatientEntity,
+        DoctorEntity,
+        NurseEntity,
+        CatRelationshipEntity,
+        CatPatientStatusEntity,
+        EventoEntity,
+      ],
       synchronize: isDevMode,
       autoLoadEntities: true,
       logging: config.get('DB_LOGGING'),
