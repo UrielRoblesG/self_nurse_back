@@ -19,17 +19,6 @@ export class EventoEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   alerta: string;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: false })
-  valor: number;
-
-  @Column({
-    name: 'signo_vital',
-    type: 'varchar',
-    length: 255,
-    nullable: false,
-  })
-  signoVital: string;
-
   @Column({ name: 'fecha', type: 'datetime' })
   fecha: Date;
 
@@ -50,6 +39,9 @@ export class EventoEntity {
 
   @ManyToOne(() => NurseEntity, (n) => n.eventos)
   nurse: NurseEntity;
+
+  @Column({ name: 'recordar', type: 'bool', default: false })
+  recordar: Boolean;
 
   @AfterRemove()
   updateStatus() {

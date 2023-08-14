@@ -22,6 +22,7 @@ import { Role } from 'src/common/enums/role.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Public } from 'src/common/decorators/public.decorator';
 import { User } from 'src/models/user';
+import { Response as Resp } from 'src/common/responses/response';
 
 @ApiTags('Usuarios')
 @ApiBearerAuth()
@@ -89,8 +90,17 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    try {
+      // TODO: Terminar esto
+    } catch (error) {
+      this.logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
+    }
   }
 
   @Roles(Role.Admin)

@@ -7,14 +7,16 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { EventoService } from './evento.service';
 import { CreateEventoDto } from './dto/create-evento.dto';
-import { UpdateEventoDto } from './dto/update-evento.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guard/auth.guard';
-import { Logger } from '@nestjs/common';
-import { Response } from 'src/common/responses/response';
+import { Logger, HttpStatus } from '@nestjs/common';
+import { Response } from 'express';
+import { Response as Resp } from 'src/common/responses/response';
 
 @ApiTags('Evento')
 @UseGuards(AuthGuard)
@@ -25,9 +27,14 @@ export class EventoController {
   constructor(private readonly eventoService: EventoService) {}
 
   @Post()
-  async create(@Body() createEventoDto: CreateEventoDto) {
+  async create(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Body() createEventoDto: CreateEventoDto,
+  ) {
     try {
-      const resp = await this.eventoService.create(createEventoDto);
+      const user = req['user'];
+      const resp = await this.eventoService.create(createEventoDto, user.id);
 
       return resp;
     } catch (e) {
@@ -35,31 +42,83 @@ export class EventoController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.eventoService.findAll();
+  @Get('/findPatientEventByDate/:id/:date')
+  async findAllPatientEvents(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Param('date') date: Date,
+  ) {
+    try {
+      const eventos = await this.eventoService.findAllPatientEvents(
+        Number.parseInt(id),
+        date,
+      );
+
+      if (eventos.length <= 0) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json(new Resp('Ok', 'No hay eventos'));
+      }
+
+      return res
+        .status(HttpStatus.OK)
+        .json(new Resp('Ok', 'Operacion exitosa', eventos));
+    } catch (error) {
+      this.log.error(error);
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json(new Resp('Ok', 'No hay eventos'));
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventoService.findOne(+id);
-  }
+  @Get('/findNurseEventByDate/:id/:day')
+  async findNurseEventByDate(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Param('day') day: Date,
+  ) {
+    try {
+      const eventos = await this.eventoService.findAllNurseEvents(
+        Number.parseInt(id),
+        day,
+      );
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEventoDto: UpdateEventoDto) {
-    return this.eventoService.update(+id, updateEventoDto);
+      if (eventos.length <= 0) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(new Resp('Ok', 'No hay eventos'));
+      }
+
+      return res
+        .status(HttpStatus.OK)
+        .json(new Resp('Ok', 'Operación exitosa', eventos));
+    } catch (error) {
+      this.log.error(error);
+
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json(new Resp('Ok', 'Operación exitosa'));
+    }
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async remove(@Res() res: Response, @Param('id') id: number) {
     try {
       const resp = await this.eventoService.remove(id);
 
-      if (resp != null) {
-        return new Response('Ok', 'Operación exitosa');
+      if (resp == null) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(new Resp('Error', 'Error al eliminar el evento'));
       }
+
+      return res
+        .status(HttpStatus.OK)
+        .json(new Resp('Ok', 'Operacion exitosa'));
     } catch (error) {
-      return new Response('Error', error);
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json(new Resp('Error', 'Error'));
     }
   }
 }

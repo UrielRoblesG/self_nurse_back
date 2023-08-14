@@ -12,6 +12,7 @@ import { CreatePatientDto } from 'src/modules/user/dto/create-patient.dto';
 import { CreateDoctorDto } from 'src/modules/user/dto/create-doctor.dto';
 
 export class RegisterAuthDto implements IUser {
+  img: string;
   id?: number;
 
   @ApiProperty()

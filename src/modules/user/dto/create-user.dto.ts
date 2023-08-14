@@ -12,8 +12,8 @@ import { CreateDoctorDto } from './create-doctor.dto';
 import { CreateCaregiverDto } from './create-caregiver.dto';
 
 export class CreateUserDto implements IUser {
+  img: string;
   id?: number;
-
   @ApiProperty()
   @IsNotEmpty()
   name: string;

@@ -3,10 +3,12 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CatPatientStatusEntity } from './cat.patient.status.entity';
 import { EventoEntity } from './evento.entity';
+import { NurseEntity } from './nurse.entity';
 
 @Entity({ name: 'paciente' })
 export class PatientEntity {
@@ -33,4 +35,7 @@ export class PatientEntity {
 
   @OneToMany(() => EventoEntity, (e) => e.paciente)
   eventos: EventoEntity[];
+
+  @OneToOne(() => NurseEntity)
+  nurse: NurseEntity;
 }

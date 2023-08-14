@@ -13,6 +13,7 @@ import {
   EventoEntity,
 } from './entities/index';
 import { ConnectionOptions } from 'typeorm/connection/ConnectionOptions';
+import { ViewGetPacienteEventos } from './views';
 
 export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
   inject: [ConfigService],
@@ -37,6 +38,7 @@ export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
         CatRelationshipEntity,
         CatPatientStatusEntity,
         EventoEntity,
+        ViewGetPacienteEventos,
       ],
       synchronize: isDevMode,
       autoLoadEntities: true,
