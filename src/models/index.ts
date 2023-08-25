@@ -1,0 +1,1 @@
+export { Evento } from './evento';

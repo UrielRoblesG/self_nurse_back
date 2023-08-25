@@ -8,30 +8,47 @@ import {
   Delete,
   UseGuards,
   Res,
+  HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Logger } from '@nestjs/common';
 import { Response } from 'express';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
+import { Public } from 'src/common/decorators/public.decorator';
+import { User } from 'src/models/user';
+import { Response as Resp } from 'src/common/responses/response';
 
-@ApiTags('User')
+@ApiTags('Usuarios')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(AuthGuard)
 @Controller('api/user')
 export class UserController {
   private readonly logger = new Logger();
 
   constructor(private readonly userService: UserService) {}
 
+  @Roles(Role.Admin)
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Res() res: Response, @Body() createUserDto: CreateUserDto) {
+    try {
+      const resp = await this.userService.create(createUserDto);
+
+      return res.status(HttpStatus.OK).json({
+        msg: 'Operación exitosa',
+        data: resp,
+      });
+    } catch (error) {
+      this.logger.error(error);
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ msg: 'Error: contracte con el administrador' });
+    }
   }
 
   @Get()
@@ -39,14 +56,51 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOneById(+id);
   }
 
+  @Roles(Role.Caregiver, Role.Doctor, Role.Patient, Role.Admin)
+  @Get('/token/:token')
+  async findOneByToken(
+    @Param('token') token: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ) {
+    try {
+      const payload = req['user'];
+      const user = await this.userService.findOneById(payload.id);
+      if (user == null) {
+        throw new Error('No se pudo obtener el usuario');
+      }
+      const userResponse = new User(user);
+      return res.status(HttpStatus.OK).send({
+        msg: 'Operacion exitosa',
+        user: userResponse,
+      });
+    } catch (error) {
+      this.logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).send({
+        msg: 'Error al obtener usuario',
+        codigo: 400,
+      });
+    }
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    try {
+      // TODO: Terminar esto
+    } catch (error) {
+      this.logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
+    }
   }
 
   @Roles(Role.Admin)

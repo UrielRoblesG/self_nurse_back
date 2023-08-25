@@ -1,4 +1,7 @@
 import { IUser } from 'src/common/interfaces/interface.user';
+import { Paciente } from './paciente';
+import { Cuidador } from './cuidador';
+import { Doctor } from './doctor';
 import { UserEntity } from 'src/database/entities/user.entity';
 
 export class User implements IUser {
@@ -7,35 +10,47 @@ export class User implements IUser {
   firstName: string;
   secondLastName: string;
   email: string;
-  password: string;
+  password?: string;
+  status?: boolean;
+  phone: string;
   type: number;
+  token: string;
+  img: string;
+  paciente?: Paciente;
+  cuidador?: Cuidador;
+  doctor?: Doctor;
 
-  constructor(
-    id: number = 0,
-    name: string,
-    firstName: string,
-    secondName: string,
-    email: string,
-    password: string = '',
-    type: number,
-  ) {
-    this.id = id;
-    this.name = name;
-    this.firstName = firstName;
-    this.secondLastName = secondName;
-    this.email = email;
-    this.password = password;
-    this.type = type;
-  }
-  static fromUserEntity(object: UserEntity): User {
-    return new User(
-      object.id,
-      object.name,
-      object.firstName,
-      object.secondLastName,
-      object.email,
-      '',
-      object.idType,
-    );
+  constructor(user: UserEntity) {
+    this.id = user.id;
+    this.name = user.name;
+    this.firstName = user.firstName;
+    this.secondLastName = user.secondLastName;
+    this.email = user.email;
+    this.password = user.password;
+    this.status = user.isActive;
+    this.phone = user.phone;
+    this.type = user.idType;
+    this.token = user.token;
+    this.img = user.imgUrl;
+
+    switch (this.type) {
+      case 1:
+        const paciente = new Paciente(user.paciente);
+        this.paciente = paciente;
+        break;
+      case 2:
+        const cuidador = new Cuidador(user.caregiver);
+        this.cuidador = cuidador;
+        break;
+      case 3:
+        const doctor = new Doctor(user.doctor);
+        this.doctor = doctor;
+        break;
+      case 4:
+        break;
+
+      default:
+        break;
+    }
   }
 }

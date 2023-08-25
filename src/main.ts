@@ -6,17 +6,23 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('Sef Nurse Documentations')
+    .setTitle('Sef Nurse Documentation')
     .addBearerAuth()
     .setDescription('The Self Nurse API description')
     .setVersion('1.0')
-    .addTag('User')
-    .addTag('Authentication')
+    .addTag('Usuarios')
+    .addTag('Autenticacion')
+    .addTag('Evento')
+    .addTag('Enfermero')
+    .addTag('Estado Paciente')
+    .addTag('Relacion cuidador')
+    .addTag('Roles')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  console.log(`Aplicación corriendo en el puerto ${AppModule.PORT}`);
+  await app.listen(AppModule.PORT);
 }
 bootstrap();

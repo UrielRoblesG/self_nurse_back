@@ -1,48 +1,40 @@
+import { PatientStatusController } from './modules/admin/patient.status/patient.status.controller';
+import { PatientStatusModule } from './modules/admin/patient.status/patient.status.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './database/entities/user.entity';
-import { CatUserType } from './database/entities/cat.user.type';
-import { PatientEntity } from './database/entities/patient.entity';
-import { DoctorEntity } from './database/entities/doctor.entity';
-import { CatRelationshipEntity } from './database/entities/cat.relationship.enity';
-import { CaregiverEntity } from './database/entities/caregiver.entity';
-import { CatPatientStatusEntity } from './database/entities/cat.patient.status.entity';
-import { ConfigModule } from '@nestjs/config';
+
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/auth/guard/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { RoleGuard } from './modules/role/guard/role.guard';
+import { RoleModule } from './modules/role/role.module';
+import { RelationshipModule } from './modules/admin/relationship/relationship.module';
+import { DatabaseModule } from './database/database.module';
+import { EventoModule } from './modules/evento/evento.module';
+import { NurseModule } from './modules/nurse/nurse.module';
+import { DoctorModule } from './modules/doctor/doctor.module';
+import { PacienteModule } from './modules/paciente/paciente.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
+    PatientStatusModule,
     AuthModule,
     UserModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'sa',
-      password: 'root',
-      database: 'self_nurse_db',
-      entities: [
-        UserEntity,
-        CatUserType,
-        PatientEntity,
-        DoctorEntity,
-        CaregiverEntity,
-        CatRelationshipEntity,
-        CatPatientStatusEntity,
-      ],
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
-    ConfigModule.forRoot({ isGlobal: true }),
+    RoleModule,
+    RelationshipModule,
+    DatabaseModule,
+    EventoModule,
+    NurseModule,
+    DoctorModule,
+    PacienteModule,
   ],
-  controllers: [AppController],
+  controllers: [PatientStatusController, AppController],
   providers: [
     AppService,
     {
@@ -57,4 +49,10 @@ import { RoleGuard } from './modules/role/guard/role.guard';
   ],
   exports: [JwtService],
 })
-export class AppModule {}
+export class AppModule {
+  static PORT: number;
+
+  constructor(private readonly configService: ConfigService) {
+    AppModule.PORT = +this.configService.get('PORT');
+  }
+}

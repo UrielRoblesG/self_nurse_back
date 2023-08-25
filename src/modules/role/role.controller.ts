@@ -1,33 +1,76 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+  Logger,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { Public } from 'src/common/decorators/public.decorator';
+import { Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('role')
+@ApiTags('Roles')
+@Controller('api/role')
 export class RoleController {
+  private readonly logger = new Logger();
   constructor(private readonly roleService: RoleService) {}
 
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard)
   @Post()
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.create(createRoleDto);
   }
 
+  @Public()
   @Get()
-  findAll() {
-    return this.roleService.findAll();
+  async findRoles(@Res() res: Response) {
+    try {
+      const resp = await this.roleService.findAll();
+
+      return res.status(HttpStatus.OK).json({
+        msg: 'Operación exitosa',
+        categorias: resp,
+      });
+    } catch (error) {
+      this.logger.error(`Error getRoles ${error}`);
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        msg: 'Error en el servidor',
+      });
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roleService.findOne(+id);
-  }
+  @Get('admin')
+  @Roles(Role.Admin)
+  async findRolesAdmin(@Res() res: Response) {
+    try {
+      const resp = await this.roleService.findAllAdmin();
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
-    return this.roleService.update(+id, updateRoleDto);
+      return res.status(HttpStatus.OK).json({
+        msg: 'Operación exitosa',
+        categorias: resp,
+      });
+    } catch (error) {
+      this.logger.error(`Error getRoles ${error}`);
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        msg: 'Error en el servidor',
+      });
+    }
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard)
   remove(@Param('id') id: string) {
     return this.roleService.remove(+id);
   }

@@ -6,14 +6,19 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CatUserType } from './cat.user.type';
-import { PatientEntity } from './patient.entity';
-import { DoctorEntity } from './doctor.entity';
-import { CaregiverEntity } from './caregiver.entity';
+
+import {
+  EventoEntity,
+  NurseEntity,
+  DoctorEntity,
+  PatientEntity,
+  CatUserType,
+} from './index';
 
 @Entity({ name: 'usuario' })
 export class UserEntity {
@@ -38,15 +43,28 @@ export class UserEntity {
   })
   email: string;
 
+  @Column({
+    nullable: false,
+    name: 'phone',
+    length: 10,
+  })
+  phone: string;
+
   @Column({ nullable: false, name: 'pswrd' })
   password: string;
 
-  @ManyToOne(() => CatUserType)
-  @Column({ nullable: false })
+  @ManyToOne(() => CatUserType, { cascade: true })
+  @Column({ nullable: false, name: 'idTypeId' })
   idType: number;
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({ nullable: true, default: '' })
+  token: string;
+
+  @Column({ nullable: true, length: 255 })
+  imgUrl: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;
@@ -62,12 +80,12 @@ export class UserEntity {
   paciente: PatientEntity;
 
   @OneToOne(() => DoctorEntity, { cascade: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'doctor_id' })
   doctor: DoctorEntity;
 
-  @OneToOne(() => CaregiverEntity, { cascade: true })
+  @OneToOne(() => NurseEntity, { cascade: true })
   @JoinColumn()
-  caregiver: CaregiverEntity;
+  caregiver: NurseEntity;
 
   @AfterRemove()
   updateStatus() {
