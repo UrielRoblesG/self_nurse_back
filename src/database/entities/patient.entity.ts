@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -9,6 +10,7 @@ import {
 import { CatPatientStatusEntity } from './cat.patient.status.entity';
 import { EventoEntity } from './evento.entity';
 import { NurseEntity } from './nurse.entity';
+import { DoctorEntity } from './doctor.entity';
 
 @Entity({ name: 'paciente' })
 export class PatientEntity {
@@ -30,12 +32,19 @@ export class PatientEntity {
   @Column({ name: 'peso' })
   weight: number;
 
+  @Column({ name: 'codigo', length: 10, type: 'varchar', nullable: true })
+  codigo: string;
+
   @ManyToOne(() => CatPatientStatusEntity, { eager: true })
   idStatus: CatPatientStatusEntity;
 
   @OneToMany(() => EventoEntity, (e) => e.paciente)
   eventos: EventoEntity[];
 
-  @OneToOne(() => NurseEntity)
+  @OneToOne(() => NurseEntity, (nurse) => nurse.paciente)
+  @JoinColumn()
   nurse: NurseEntity;
+
+  @ManyToOne(() => DoctorEntity, (d) => d.pacientes)
+  doctor: DoctorEntity;
 }

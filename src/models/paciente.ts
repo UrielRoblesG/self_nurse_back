@@ -1,6 +1,4 @@
-import { IUser } from 'src/common/interfaces/interface.user';
 import { PatientEntity } from 'src/database/entities/patient.entity';
-import { UserEntity } from 'src/database/entities/user.entity';
 import { CatPacienteEstatus } from './cat.paciente.estatus';
 
 export class Paciente {
@@ -11,6 +9,7 @@ export class Paciente {
   height: number;
   weight: number;
   phone: string;
+  codigo: string;
   status: CatPacienteEstatus;
 
   constructor({
@@ -21,6 +20,7 @@ export class Paciente {
     height,
     weight,
     idStatus,
+    codigo,
   }: PatientEntity) {
     this.id = id;
     this.genero = gender;
@@ -28,6 +28,7 @@ export class Paciente {
     this.bloodType = bloodType;
     this.height = height;
     this.weight = weight;
+    this.codigo = codigo;
     this.status = CatPacienteEstatus.FromPatientEntity(idStatus);
   }
 }

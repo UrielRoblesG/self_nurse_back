@@ -17,6 +17,6 @@ export class NurseEntity {
   @OneToMany(() => EventoEntity, (e) => e.nurse)
   eventos: EventoEntity[];
 
-  @OneToOne(() => PatientEntity)
+  @OneToOne(() => PatientEntity, (patient) => patient.nurse)
   paciente: PatientEntity;
 }

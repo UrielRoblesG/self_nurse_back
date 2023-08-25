@@ -16,6 +16,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { HttpStatus } from '@nestjs/common';
 import { AuthGuard } from './guard/auth.guard';
 import { IJwtPayload } from 'src/common/interfaces/interface.jwt.payload';
+import { Response as Resp } from 'src/common/responses/response';
 
 @ApiTags('Autenticacion')
 @Controller('api/auth')
@@ -46,10 +47,12 @@ export class AuthController {
     try {
       const resp = await this.authService.register(registerAuthDto);
 
-      return res.status(HttpStatus.OK).json(resp);
+      return res.status(HttpStatus.OK).json({ user: resp });
     } catch (error) {
       console.log(error);
-      return res.json(error);
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json(new Resp('Error', 'Error'));
     }
   }
 

@@ -80,7 +80,7 @@ export class UserEntity {
   paciente: PatientEntity;
 
   @OneToOne(() => DoctorEntity, { cascade: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'doctor_id' })
   doctor: DoctorEntity;
 
   @OneToOne(() => NurseEntity, { cascade: true })

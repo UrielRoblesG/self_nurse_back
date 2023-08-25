@@ -34,7 +34,7 @@ export class EventoController {
   ) {
     try {
       const user = req['user'];
-      const resp = await this.eventoService.create(createEventoDto, user.id);
+      const resp = await this.eventoService.create(createEventoDto, user);
 
       return resp;
     } catch (e) {
@@ -42,21 +42,20 @@ export class EventoController {
     }
   }
 
-  @Get('/findPatientEventByDate/:id/:date')
+  @Get('/findEventByDate/:date')
   async findAllPatientEvents(
     @Res() res: Response,
-    @Param('id') id: string,
+    @Req() req: Request,
     @Param('date') date: Date,
   ) {
     try {
-      const eventos = await this.eventoService.findAllPatientEvents(
-        Number.parseInt(id),
-        date,
-      );
+      const user = req['user'];
+
+      const eventos = await this.eventoService.findAllEvents(user, date);
 
       if (eventos.length <= 0) {
         return res
-          .status(HttpStatus.NOT_FOUND)
+          .status(HttpStatus.NO_CONTENT)
           .json(new Resp('Ok', 'No hay eventos'));
       }
 
@@ -67,7 +66,7 @@ export class EventoController {
       this.log.error(error);
       return res
         .status(HttpStatus.BAD_REQUEST)
-        .json(new Resp('Ok', 'No hay eventos'));
+        .json(new Resp('Ok', 'Error en la solicitud'));
     }
   }
 

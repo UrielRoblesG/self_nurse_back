@@ -71,7 +71,7 @@ export class AuthService {
     };
   }
 
-  async register(registerAuthDto: RegisterAuthDto): Promise<IAuthRespose> {
+  async register(registerAuthDto: RegisterAuthDto): Promise<User> {
     const { email } = registerAuthDto;
     const userExist = await this.userService.findOneByEmail(email);
 
@@ -84,10 +84,7 @@ export class AuthService {
 
     const user = await this.userService.create(registerAuthDto);
 
-    return {
-      msg: 'Operación exitosa',
-      user,
-    };
+    return user;
   }
 
   async logout(user: any): Promise<boolean> {

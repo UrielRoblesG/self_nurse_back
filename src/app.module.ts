@@ -15,6 +15,9 @@ import { RoleModule } from './modules/role/role.module';
 import { RelationshipModule } from './modules/admin/relationship/relationship.module';
 import { DatabaseModule } from './database/database.module';
 import { EventoModule } from './modules/evento/evento.module';
+import { NurseModule } from './modules/nurse/nurse.module';
+import { DoctorModule } from './modules/doctor/doctor.module';
+import { PacienteModule } from './modules/paciente/paciente.module';
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { EventoModule } from './modules/evento/evento.module';
     RelationshipModule,
     DatabaseModule,
     EventoModule,
+    NurseModule,
+    DoctorModule,
+    PacienteModule,
   ],
   controllers: [PatientStatusController, AppController],
   providers: [

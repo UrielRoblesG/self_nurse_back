@@ -53,7 +53,7 @@ export class UserService {
       const passwordHash = await Encrypt.hash(password);
 
       createUserDto = { ...createUserDto, password: passwordHash };
-      let resp: any;
+      let resp: UserEntity;
 
       switch (createUserDto.type) {
         case 1:
@@ -105,6 +105,10 @@ export class UserService {
       });
 
       resp.token = token;
+
+      if (resp.idType == 1) {
+        resp.paciente.codigo = token.substring(token.length - 10, token.length);
+      }
 
       this.userRepository.save(resp);
 

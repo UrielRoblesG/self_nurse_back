@@ -1,55 +1,61 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEventoDto } from './dto/create-evento.dto';
-import { UpdateEventoDto } from './dto/update-evento.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  EventoEntity,
-  NurseEntity,
-  PatientEntity,
-  UserEntity,
-} from 'src/database/entities';
-import { Between, MoreThan, Repository } from 'typeorm';
+import { EventoEntity, UserEntity } from 'src/database/entities';
+import { Between, Repository } from 'typeorm';
 import { Response } from 'src/common/responses/response';
 import { ViewGetPacienteEventos } from 'src/database/views';
 import { endOfDay, parseISO, startOfDay } from 'date-fns';
 import { Evento } from 'src/models';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class EventoService {
   constructor(
     @InjectRepository(EventoEntity)
     private readonly eventoRepository: Repository<EventoEntity>,
-    @InjectRepository(PatientEntity)
-    private readonly patientRepository: Repository<PatientEntity>,
-    @InjectRepository(NurseEntity)
-    private readonly nurseRepository: Repository<NurseEntity>,
     @InjectRepository(ViewGetPacienteEventos)
     private readonly viewGetEventoPaciente: Repository<ViewGetPacienteEventos>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async create(
-    createEventoDto: CreateEventoDto,
-    id: number,
-  ): Promise<Response> {
-    const user = await this.userRepository.findOneBy({ id: id });
-
-    const { pacienteId, nurseId } = createEventoDto;
-
-    const patient = await this.patientRepository.findOneBy({ id: pacienteId });
-
-    const nurse = await this.nurseRepository.findOneBy({ id: nurseId });
-
-    if (patient == null || nurse == null) {
-      new Response('Error', 'No existen un paciente o el enfermer@ requeridos');
+  async create(createEventoDto: CreateEventoDto, userAuth: any) {
+    let evento: EventoEntity;
+    switch (userAuth.role) {
+      case 'patient':
+        const paciente = await this.userRepository.findOne({
+          where: { id: userAuth.id, deletedAt: null },
+          relations: {
+            paciente: {
+              doctor: true,
+              nurse: true,
+            },
+          },
+        });
+        evento = await this.eventoRepository.create();
+        evento.alerta = createEventoDto.alerta;
+        evento.fecha = new Date(createEventoDto.fecha);
+        evento.nurse = paciente.paciente.nurse;
+        evento.paciente = paciente.paciente;
+        break;
+      case 'caregiver':
+        const nurse = await this.userRepository.findOne({
+          where: { id: userAuth.id, deletedAt: null },
+          relations: {
+            caregiver: {
+              paciente: true,
+            },
+          },
+        });
+        evento = await this.eventoRepository.create();
+        evento.alerta = createEventoDto.alerta;
+        evento.fecha = new Date(createEventoDto.fecha);
+        evento.nurse = nurse.caregiver;
+        evento.paciente = nurse.caregiver.paciente;
+        break;
+      default:
+        throw new Error('Rol no valido');
     }
-    const evento = await this.eventoRepository.create();
-    evento.alerta = createEventoDto.alerta;
-    evento.fecha = new Date(createEventoDto.fecha);
-    evento.nurse = nurse;
-    evento.paciente = patient;
 
     try {
       await this.eventoRepository.save(evento);
@@ -59,16 +65,51 @@ export class EventoService {
     }
   }
 
-  async findAllPatientEvents(id: number, day: Date): Promise<Evento[]> {
+  async findAllEvents(user: any, day: Date): Promise<Evento[]> {
     const date = parseISO(day.toString());
     const start = startOfDay(date);
     const end = endOfDay(date);
-    const eventos = await this.viewGetEventoPaciente.findAndCount({
-      where: {
-        pacienteId: id,
-        fecha: Between(start, end),
-      },
-    });
+    let eventos: [ViewGetPacienteEventos[], number] = [[], 0];
+
+    switch (user.role) {
+      case 'patient':
+        const paciente = await this.userRepository.findOne({
+          where: {
+            deletedAt: null,
+            id: user.id,
+          },
+          relations: {
+            paciente: true,
+          },
+        });
+        eventos = await this.viewGetEventoPaciente.findAndCount({
+          where: {
+            pacienteId: paciente.paciente.id,
+            fecha: Between(start, end),
+          },
+        });
+        break;
+      case 'caregiver':
+        const nurse = await this.userRepository.findOne({
+          where: {
+            deletedAt: null,
+            id: user.id,
+          },
+          relations: {
+            caregiver: true,
+          },
+        });
+        eventos = await this.viewGetEventoPaciente.findAndCount({
+          where: {
+            nurseId: nurse.caregiver.id,
+            fecha: Between(start, end),
+          },
+        });
+
+        break;
+      default:
+        break;
+    }
 
     if (eventos[1] <= 0) {
       return [];
