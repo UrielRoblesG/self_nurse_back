@@ -17,6 +17,7 @@ import { AuthGuard } from '../auth/guard/auth.guard';
 import { Logger, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { Response as Resp } from 'src/common/responses/response';
+import { Evento } from 'src/models';
 
 @ApiTags('Evento')
 @UseGuards(AuthGuard)
@@ -34,16 +35,23 @@ export class EventoController {
   ) {
     try {
       const user = req['user'];
-      const resp = await this.eventoService.create(createEventoDto, user);
+      const evento = await this.eventoService.create(createEventoDto, user);
 
-      return resp;
+      if (evento == null) {
+        throw new Error('Error al crear el evento');
+      }
+
+      return res
+        .status(HttpStatus.OK)
+        .json(new Resp('Ok', 'Operación exitosa', new Evento(evento)));
     } catch (e) {
       this.log.error(e);
+      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', e));
     }
   }
 
   @Get('/findEventByDate/:date')
-  async findAllPatientEvents(
+  async findAllEvents(
     @Res() res: Response,
     @Req() req: Request,
     @Param('date') date: Date,

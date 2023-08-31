@@ -1,3 +1,5 @@
+import { EventoEntity } from 'src/database/entities';
+
 export class Evento {
   id: number;
   alerta: string;
@@ -5,20 +7,15 @@ export class Evento {
   pacienteId: number;
   nurseId: number;
   recordar: boolean;
+  tipo: number;
 
-  constructor(
-    id: number,
-    alerta: string,
-    fecha: Date,
-    paciente: number,
-    nurse: number,
-    recordar: boolean,
-  ) {
-    this.id = id;
-    this.alerta = alerta;
-    this.fecha = fecha;
-    this.pacienteId = paciente;
-    this.nurseId = nurse;
-    this.recordar = recordar;
+  constructor(data: EventoEntity) {
+    this.id = data.id;
+    this.alerta = data.alerta;
+    this.fecha = data.fecha;
+    this.pacienteId = data.paciente.id;
+    this.nurseId = data.nurse.id;
+    this.recordar = data.recordar;
+    this.tipo = data.tipo;
   }
 }

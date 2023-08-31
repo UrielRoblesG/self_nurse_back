@@ -41,7 +41,10 @@ export class EventoEntity {
   nurse: NurseEntity;
 
   @Column({ name: 'recordar', type: 'bool', default: false })
-  recordar: Boolean;
+  recordar: boolean;
+
+  @Column({ name: 'tipo', type: 'smallint' })
+  tipo: number;
 
   @AfterRemove()
   updateStatus() {
