@@ -19,7 +19,10 @@ export class EventoService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async create(createEventoDto: CreateEventoDto, userAuth: any) {
+  async create(
+    createEventoDto: CreateEventoDto,
+    userAuth: any,
+  ): Promise<EventoEntity> {
     let evento: EventoEntity;
     switch (userAuth.role) {
       case 'patient':
@@ -32,11 +35,13 @@ export class EventoService {
             },
           },
         });
-        evento = await this.eventoRepository.create();
+        evento = this.eventoRepository.create();
         evento.alerta = createEventoDto.alerta;
-        evento.fecha = new Date(createEventoDto.fecha);
+        evento.fecha = createEventoDto.fecha;
         evento.nurse = paciente.paciente.nurse;
         evento.paciente = paciente.paciente;
+        evento.tipo = createEventoDto.tipo;
+        evento.recordar = createEventoDto.recordar;
         break;
       case 'caregiver':
         const nurse = await this.userRepository.findOne({
@@ -47,11 +52,13 @@ export class EventoService {
             },
           },
         });
-        evento = await this.eventoRepository.create();
+        evento = this.eventoRepository.create();
         evento.alerta = createEventoDto.alerta;
         evento.fecha = new Date(createEventoDto.fecha);
         evento.nurse = nurse.caregiver;
         evento.paciente = nurse.caregiver.paciente;
+        evento.tipo = createEventoDto.tipo;
+        evento.recordar = createEventoDto.recordar;
         break;
       default:
         throw new Error('Rol no valido');
@@ -59,9 +66,9 @@ export class EventoService {
 
     try {
       await this.eventoRepository.save(evento);
-      return new Response('Ok', 'Operación exitosa', evento);
+      return evento;
     } catch (error) {
-      return new Response('Error', 'Error al guardar el evento');
+      return null;
     }
   }
 
@@ -69,7 +76,7 @@ export class EventoService {
     const date = parseISO(day.toString());
     const start = startOfDay(date);
     const end = endOfDay(date);
-    let eventos: [ViewGetPacienteEventos[], number] = [[], 0];
+    let eventos: [EventoEntity[], number] = [[], 0];
 
     switch (user.role) {
       case 'patient':
@@ -82,10 +89,17 @@ export class EventoService {
             paciente: true,
           },
         });
-        eventos = await this.viewGetEventoPaciente.findAndCount({
+        eventos = await this.eventoRepository.findAndCount({
           where: {
-            pacienteId: paciente.paciente.id,
+            paciente: {
+              id: paciente.paciente.id,
+            },
+            deletedAt: null,
             fecha: Between(start, end),
+          },
+          relations: {
+            paciente: true,
+            nurse: true,
           },
         });
         break;
@@ -99,10 +113,17 @@ export class EventoService {
             caregiver: true,
           },
         });
-        eventos = await this.viewGetEventoPaciente.findAndCount({
+        eventos = await this.eventoRepository.findAndCount({
           where: {
-            nurseId: nurse.caregiver.id,
+            nurse: {
+              id: nurse.caregiver.id,
+            },
             fecha: Between(start, end),
+            deletedAt: null,
+          },
+          relations: {
+            nurse: true,
+            paciente: true,
           },
         });
 
@@ -118,14 +139,7 @@ export class EventoService {
     let items: Evento[] = [];
 
     eventos[0].map((e) => {
-      let evento = new Evento(
-        e.id,
-        e.alerta,
-        e.fecha,
-        e.pacienteId,
-        e.nurseId,
-        e.recordar,
-      );
+      let evento = new Evento(e);
 
       items.push(evento);
     });
@@ -136,10 +150,13 @@ export class EventoService {
   async findAllNurseEvents(id: number, day: Date): Promise<Evento[]> {
     const date = parseISO(day.toString());
 
-    const items = await this.viewGetEventoPaciente.findAndCount({
+    const items = await this.eventoRepository.findAndCount({
       where: {
-        nurseId: id,
+        nurse: {
+          id: id,
+        },
         fecha: Between(startOfDay(date), endOfDay(date)),
+        deletedAt: null,
       },
     });
 
@@ -149,14 +166,7 @@ export class EventoService {
     let eventos: Evento[] = [];
 
     items[0].map((e) => {
-      let evento = new Evento(
-        e.id,
-        e.alerta,
-        e.fecha,
-        e.pacienteId,
-        e.nurseId,
-        e.recordar,
-      );
+      let evento = new Evento(e);
 
       eventos.push(evento);
     });
