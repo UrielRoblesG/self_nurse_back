@@ -21,7 +21,7 @@ import { Response as Resp } from 'src/common/responses/response';
 @ApiTags('Autenticacion')
 @Controller('api/auth')
 export class AuthController {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(AuthController.name);
 
   constructor(private readonly authService: AuthService) {}
 

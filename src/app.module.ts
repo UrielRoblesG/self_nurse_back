@@ -18,10 +18,12 @@ import { EventoModule } from './modules/evento/evento.module';
 import { NurseModule } from './modules/nurse/nurse.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { PacienteModule } from './modules/paciente/paciente.module';
-
+import { ScheduleModule } from '@nestjs/schedule';
+import { EventNotificationService } from './task/event-notification/event-notification.service';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     PatientStatusModule,
     AuthModule,
@@ -46,6 +48,7 @@ import { PacienteModule } from './modules/paciente/paciente.module';
       useClass: RoleGuard,
     },
     JwtService,
+    EventNotificationService,
   ],
   exports: [JwtService],
 })

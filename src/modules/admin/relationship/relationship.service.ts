@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class RelationshipService {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(RelationshipService.name);
   constructor(
     @InjectRepository(CatRelationshipEntity)
     private readonly catRelationshipRepository: Repository<CatRelationshipEntity>,

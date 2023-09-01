@@ -24,7 +24,7 @@ import { Evento } from 'src/models';
 @ApiBearerAuth()
 @Controller('api/evento')
 export class EventoController {
-  private readonly log = new Logger();
+  private readonly log = new Logger(EventoController.name);
   constructor(private readonly eventoService: EventoService) {}
 
   @Post()

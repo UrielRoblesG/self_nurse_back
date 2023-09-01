@@ -13,21 +13,19 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { PacienteService } from './paciente.service';
-import { CreatePacienteDto } from './dto/create-paciente.dto';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { Response as Resp } from 'src/common/responses/response';
 import { User } from 'src/models/user';
-import { UserEntity } from 'src/database/entities';
 
 @ApiTags('Paciente')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('api/paciente')
 export class PacienteController {
-  private readonly _logger = new Logger();
+  private readonly _logger = new Logger(PacienteController.name);
   constructor(private readonly pacienteService: PacienteService) {}
 
   @Get('getDoctor')

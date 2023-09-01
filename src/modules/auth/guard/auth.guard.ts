@@ -13,7 +13,7 @@ import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(AuthGuard.name);
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,

@@ -25,7 +25,7 @@ import { Response as Resp } from 'src/common/responses/response';
 @UseGuards(AuthGuard)
 @Controller('api/doctor/')
 export class DoctorController {
-  private readonly _logger = new Logger();
+  private readonly _logger = new Logger(DoctorController.name);
 
   constructor(private readonly doctorService: DoctorService) {}
 

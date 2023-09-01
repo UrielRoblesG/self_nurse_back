@@ -23,7 +23,7 @@ import { User } from 'src/models/user';
 
 @Injectable()
 export class UserService {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(UserService.name);
 
   constructor(
     @InjectRepository(UserEntity)
