@@ -1,3 +1,4 @@
+import { TaskModule } from './task/task.module';
 import { PatientStatusController } from './modules/admin/patient.status/patient.status.controller';
 import { PatientStatusModule } from './modules/admin/patient.status/patient.status.module';
 import { Module } from '@nestjs/common';
@@ -22,6 +23,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { EventNotificationService } from './task/event-notification/event-notification.service';
 @Module({
   imports: [
+    TaskModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     DatabaseModule,
@@ -48,7 +50,6 @@ import { EventNotificationService } from './task/event-notification/event-notifi
       useClass: RoleGuard,
     },
     JwtService,
-    EventNotificationService,
   ],
   exports: [JwtService],
 })
