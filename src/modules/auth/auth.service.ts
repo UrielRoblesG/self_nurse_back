@@ -19,7 +19,7 @@ import { User } from 'src/models/user';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(AuthService.name);
   constructor(private readonly userService: UserService) {}
 
   async login(user: LoginAuthDto): Promise<IAuthRespose> {

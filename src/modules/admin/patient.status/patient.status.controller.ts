@@ -11,7 +11,7 @@ import { PatientStatusService } from './patient.status.service';
 @ApiTags('Estado Paciente')
 @Controller('/api/patientStatus')
 export class PatientStatusController {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(PatientStatusController.name);
   constructor(private readonly patientStatusService: PatientStatusService) {}
 
   @Get()

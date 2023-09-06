@@ -25,7 +25,7 @@ import { User } from 'src/models/user';
 @UseGuards(AuthGuard)
 @Controller('api/nurse')
 export class NurseController {
-  private readonly _logger = new Logger();
+  private readonly _logger = new Logger(NurseController.name);
 
   constructor(private readonly nurseService: NurseService) {}
 

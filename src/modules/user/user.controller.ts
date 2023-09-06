@@ -29,7 +29,7 @@ import { Response as Resp } from 'src/common/responses/response';
 @UseGuards(AuthGuard)
 @Controller('api/user')
 export class UserController {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(UserController.name);
 
   constructor(private readonly userService: UserService) {}
 

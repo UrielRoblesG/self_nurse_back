@@ -8,7 +8,7 @@ import { DoctorService } from '../doctor/doctor.service';
 
 @Injectable()
 export class PacienteService {
-  private readonly _looger = new Logger();
+  private readonly _looger = new Logger(PacienteService.name);
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,

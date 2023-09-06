@@ -24,7 +24,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('Relacion cuidador')
 @Controller('/api/relationship')
 export class RelationshipController {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(RelationshipController.name);
 
   constructor(private readonly relationshipService: RelationshipService) {}
 

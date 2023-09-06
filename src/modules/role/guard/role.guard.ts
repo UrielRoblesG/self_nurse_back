@@ -11,7 +11,7 @@ import * as request from 'supertest';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(RoleGuard.name);
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {

@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class PatientStatusService {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(PatientStatusService.name);
   constructor(
     @InjectRepository(CatPatientStatusEntity)
     private readonly catPacienteEstatusRepository: Repository<CatPatientStatusEntity>,
