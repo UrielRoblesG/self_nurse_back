@@ -8,9 +8,9 @@ import { ViewGetPacienteEventos } from '../database/views';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    /*ClientsModule.register([
       { name: 'NOTIFICATION_SERVICE', transport: Transport.TCP },
-    ]),
+    ]),*/
     TypeOrmModule.forFeature([
       EventoEntity,
       ViewGetPacienteEventos,

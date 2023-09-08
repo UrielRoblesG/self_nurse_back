@@ -25,9 +25,9 @@ import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    /*ClientsModule.register([
       { name: 'NOTIFICATION_SERVICE', transport: Transport.TCP },
-    ]),
+    ]),*/
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     DatabaseModule,
@@ -41,7 +41,7 @@ import { TaskModule } from './task/task.module';
     NurseModule,
     DoctorModule,
     PacienteModule,
-    TaskModule,
+    //TaskModule,
   ],
   controllers: [PatientStatusController, AppController],
   providers: [

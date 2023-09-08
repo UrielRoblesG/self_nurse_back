@@ -1,7 +1,6 @@
 import { Controller, Get, Logger } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { EventPattern } from '@nestjs/microservices';
-import { RecordatorioDto } from './dto/recordatorio.dto';
 import { EventoEntity } from 'apps/self-nurse/src/database/entities';
 @Controller()
 export class NotificationController {
