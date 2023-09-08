@@ -1,4 +1,4 @@
-import { EventoEntity } from '../database/entities';
+import { EventoEntity } from './database/evento.entity';
 
 export class Evento {
   id: number;

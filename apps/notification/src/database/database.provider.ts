@@ -1,15 +1,15 @@
 import { DynamicModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Environment } from '../common/enums/environment.enum'
+import { Environment } from '../environment.enum';
 import {
   UserEntity,
   PatientEntity,
   NurseEntity,
   EventoEntity,
-} from './entities/index';
+} from './index';
 import { ConnectionOptions } from 'typeorm/connection/ConnectionOptions';
-import { ViewGetPacienteEventos } from './views/v.get.eventos';
+//import { ViewGetPacienteEventos } from './v.get.eventos';
 
 export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
   inject: [ConfigService],
@@ -30,7 +30,7 @@ export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
         PatientEntity,
         NurseEntity,
         EventoEntity,
-        ViewGetPacienteEventos,
+        /*ViewGetPacienteEventos,*/
       ],
       synchronize: isDevMode,
       autoLoadEntities: true,

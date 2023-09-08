@@ -5,7 +5,7 @@ import {
   } from '@nestjs/websockets';
   import { Server } from 'socket.io';
   import { Cron, CronExpression } from '@nestjs/schedule';
-  import { EventoService } from './services/evento.service';
+  import { EventoService } from './evento.service';
   import { Injectable, Logger } from '@nestjs/common';
   
   @Injectable()
@@ -20,7 +20,7 @@ import {
       this.logger.log('Socket.io microservice initialized.');
     }
 
-    @Cron(CronExpression.EVERY_5_MINUTES)
+    @Cron(CronExpression.EVERY_5_SECONDS)
     async showEveryFiveMinutes() {
       const eventos = await this.eventoService.obtenerEventosProximos(new Date());
   
@@ -28,6 +28,7 @@ import {
         return;
       }
       this.logger.log('Emitting event to all clients.');
-      this.server.emit('send_notification', eventos);
+      this.server.emit('send_notification', 'hola, si se emitieron datos');
+      //this.server.emit('send_notification', eventos);
     }
   }

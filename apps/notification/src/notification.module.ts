@@ -1,18 +1,21 @@
 import { Module } from '@nestjs/common';
-//import { NotificationController } from './notification.controller';
-//import { NotificationService } from './notification.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EventoEntity, UserEntity } from './database/entities/';
-import { ViewGetPacienteEventos } from './database/views/v.get.eventos';
-import { EventoService } from './services/evento.service';
+import { EventoEntity, UserEntity } from './database/';
+import { EventoService } from './evento.service';
 import { EventsGateway } from './events.gateway';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DatabaseModule } from './database/database.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
     EventoEntity,
-    ViewGetPacienteEventos,
+    /*ViewGetPacienteEventos,*/
     UserEntity,
-  ]),],
+  ]),
+  ConfigModule.forRoot({ isGlobal: true }),
+  ScheduleModule.forRoot(),
+  DatabaseModule,],
   /*controllers: [NotificationController],*/
   providers: [/*NotificationService, */EventsGateway, EventoService],
 })
