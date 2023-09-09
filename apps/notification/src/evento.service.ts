@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EventoEntity } from './database/evento.entity';
+import { EventoEntity } from 'apps/self-nurse/src/database/entities/evento.entity';
 import { Between, Repository } from 'typeorm';
 
 @Injectable()
