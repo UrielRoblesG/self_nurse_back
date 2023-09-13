@@ -6,20 +6,19 @@ import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { DatabaseModule } from 'apps/self-nurse/src/database/database.module';
 import { EventoEntity } from 'apps/self-nurse/src/database/entities/evento.entity';
-import { UserEntity } from 'apps/self-nurse/src/database/entities/user.entity';
+import { NurseEntity, PatientEntity } from 'apps/self-nurse/src/database/entities';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       EventoEntity,
-      /*ViewGetPacienteEventos,*/
-      UserEntity,
+      NurseEntity,
+      PatientEntity,
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     DatabaseModule,
   ],
-  /*controllers: [NotificationController],*/
-  providers: [/*NotificationService, */ EventsGateway, EventoService],
+  providers: [EventsGateway/*, EventoService*/],
 })
 export class NotificationModule {}

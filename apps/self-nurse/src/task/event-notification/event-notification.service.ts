@@ -8,7 +8,7 @@ export class EventNotificationService {
   private readonly _logger = new Logger(EventNotificationService.name);
 
   constructor(
-    @Inject('NOTIFICATION_SERVICE') private client: ClientProxy,
+    //@Inject('NOTIFICATION_SERVICE') private client: ClientProxy,
 
     private readonly eventoService: EventoService,
   ) {}
@@ -21,6 +21,6 @@ export class EventNotificationService {
       return;
     }
 
-    this.client.emit('send_notification', eventos);
+    //this.client.emit('send_notification', eventos);
   }
 }

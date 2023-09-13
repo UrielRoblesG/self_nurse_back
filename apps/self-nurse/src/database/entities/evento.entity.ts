@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { NurseEntity, PatientEntity, UserEntity } from './index';
+import { NurseEntity, PatientEntity } from './index';
 
 @Entity({ name: 'evento' })
 export class EventoEntity {
