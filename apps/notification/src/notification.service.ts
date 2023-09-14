@@ -4,7 +4,7 @@ import { EventoEntity, UserEntity } from 'apps/self-nurse/src/database/entities/
 import { Between, Repository, In } from 'typeorm';
 
 @Injectable()
-export class EventoService {
+export class NotificationService {
   private readonly _logger = new Logger();
 
   constructor(
@@ -54,8 +54,8 @@ export class EventoService {
       return users;
     
     } catch (error) {
-      this._logger.error(error);
-      return null;
+      this._logger.error('Error en servicio al buscar usuarios:', error);
+      return [];
     }
   }
   
