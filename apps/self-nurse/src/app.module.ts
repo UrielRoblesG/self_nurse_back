@@ -19,11 +19,9 @@ import { NurseModule } from './modules/nurse/nurse.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { PacienteModule } from './modules/paciente/paciente.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
-    TaskModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     DatabaseModule,
@@ -37,7 +35,6 @@ import { TaskModule } from './task/task.module';
     NurseModule,
     DoctorModule,
     PacienteModule,
-    //TaskModule,
   ],
   controllers: [PatientStatusController, AppController],
   providers: [
