@@ -32,6 +32,7 @@ export class RoleController {
     return this.roleService.create(createRoleDto);
   }
 
+  //TODO: Mejorar esta parte
   @Public()
   @Get()
   async findRoles(@Res() res: Response) {

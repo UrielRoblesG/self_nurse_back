@@ -20,7 +20,7 @@ async function bootstrap() {
     .addTag('Relacion cuidador')
     .addTag('Roles')
     .build();
-
+  app.enableCors();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 

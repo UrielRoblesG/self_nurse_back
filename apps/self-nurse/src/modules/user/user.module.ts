@@ -10,6 +10,7 @@ import { NurseEntity } from '../../database/entities/nurse.entity';
 import { DoctorEntity } from '../../database/entities/doctor.entity';
 import { RelationshipModule } from '../admin/relationship/relationship.module';
 import { PatientStatusModule } from '../admin/patient.status/patient.status.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PatientStatusModule } from '../admin/patient.status/patient.status.modu
     PassportModule.register({ defaultStrategy: 'jwt' }),
     RelationshipModule,
     PatientStatusModule,
+    CloudinaryModule,
   ],
   controllers: [UserController],
   providers: [UserService, JwtService],

@@ -8,7 +8,6 @@ import { PatientEntity } from '../../database/entities/patient.entity';
 import { IUser } from '../../common/interfaces/interface.user';
 import { NurseEntity } from '../../database/entities/nurse.entity';
 import { DoctorEntity } from '../../database/entities/doctor.entity';
-import { RelationshipService } from '../admin/relationship/relationship.service';
 import { PatientStatusService } from '../admin/patient.status/patient.status.service';
 import { getRole } from '../../common/enums/role.enum';
 import { JwtService } from '@nestjs/jwt';
@@ -16,10 +15,8 @@ import { ConfigService } from '@nestjs/config';
 import { Encrypt } from '../../utils/encrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RegisterAuthDto } from '../auth/dto/register-auth.dto';
-import { Doctor } from '../../models/doctor';
-import { Cuidador } from '../../models/cuidador';
-import { Paciente } from '../../models/paciente';
 import { User } from '../../models/user';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
 
 @Injectable()
 export class UserService {
@@ -43,6 +40,7 @@ export class UserService {
     private readonly jwtService: JwtService,
 
     private readonly configService: ConfigService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createUserDto: CreateUserDto | RegisterAuthDto): Promise<IUser> {
@@ -237,5 +235,33 @@ export class UserService {
     });
 
     return await this.userRepository.save(u);
+  }
+
+  public async updateProfilePhoto(
+    oUserId: number,
+    file: Express.Multer.File,
+  ): Promise<string> {
+    const user = await this.userRepository.findOne({
+      where: {
+        deletedAt: null,
+        id: oUserId,
+      },
+    });
+
+    if (user == null) return null;
+
+    try {
+      const { secure_url } = await this.cloudinaryService.uploadFile(file);
+
+      user.imgUrl = secure_url;
+      const updatedUser = await this.userRepository.save(user);
+
+      this.logger.log(updatedUser);
+
+      return updatedUser.imgUrl;
+    } catch (error) {
+      this.logger.error(error);
+      return null;
+    }
   }
 }

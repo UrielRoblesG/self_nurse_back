@@ -1,3 +1,4 @@
+import { CloudinaryModule } from './modules/user/cloudinary/cloudinary.module';
 import { PatientStatusController } from './modules/admin/patient.status/patient.status.controller';
 import { PatientStatusModule } from './modules/admin/patient.status/patient.status.module';
 import { Module } from '@nestjs/common';
@@ -19,11 +20,10 @@ import { NurseModule } from './modules/nurse/nurse.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { PacienteModule } from './modules/paciente/paciente.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
-    TaskModule,
+    CloudinaryModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     DatabaseModule,
@@ -37,7 +37,6 @@ import { TaskModule } from './task/task.module';
     NurseModule,
     DoctorModule,
     PacienteModule,
-    //TaskModule,
   ],
   controllers: [PatientStatusController, AppController],
   providers: [

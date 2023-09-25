@@ -10,10 +10,13 @@ import {
   Res,
   HttpStatus,
   Req,
+  Put,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipeBuilder,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
 import { Response } from 'express';
@@ -23,6 +26,10 @@ import { AuthGuard } from '../auth/guard/auth.guard';
 import { Public } from '../../common/decorators/public.decorator';
 import { User } from '../../models/user';
 import { Response as Resp } from '../../common/responses/response';
+import { FileInterceptor } from '@nestjs/platform-express/multer';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { FileTypeValidationPipe } from '../../common/pipes/file-type-validation.pipe';
 
 @ApiTags('Usuarios')
 @ApiBearerAuth()
@@ -89,14 +96,27 @@ export class UserController {
     }
   }
 
-  @Patch(':id')
-  update(
+  @Post('/image/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateProfilePhoto(
     @Res() res: Response,
     @Req() req: Request,
-    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile(new FileTypeValidationPipe()) file: Express.Multer.File,
   ) {
     try {
-      // TODO: Terminar esto
+      const user = req['user'];
+      const resp = await this.userService.updateProfilePhoto(user['id'], file);
+
+      if (resp == null) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(new Resp('Error', 'Error al subir imagen al servidor'));
+      }
+      return res.status(HttpStatus.OK).json(
+        new Resp('Ok', 'Operación exitosa', {
+          secure_url: resp,
+        }),
+      );
     } catch (error) {
       this.logger.error(error);
       return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
