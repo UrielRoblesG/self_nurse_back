@@ -63,6 +63,7 @@ export class UserService {
             height: paciente.altura,
             idStatus: patientStatus,
             weight: paciente.peso,
+            birthday: paciente.birthday,
           });
 
           resp = await this.createUserPaciente(createUserDto, pat);
