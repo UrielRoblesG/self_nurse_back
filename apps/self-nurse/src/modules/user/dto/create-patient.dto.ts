@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, isDateString } from 'class-validator';
 import { CatPacienteEstatus } from '../../../models/cat.paciente.estatus';
 
 export class CreatePatientDto {
@@ -29,4 +29,9 @@ export class CreatePatientDto {
 
   @IsNotEmpty()
   parentesco: number;
+
+  @ApiProperty()
+  @IsDateString()
+  @IsNotEmpty()
+  birthday: string;
 }
