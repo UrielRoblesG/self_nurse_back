@@ -38,3 +38,4 @@ lerna-debug.log*
 *.png
 *.jpeg
 *.jpg
+/images/uploads

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../../database/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 import { PatientEntity } from '../../database/entities/patient.entity';
 import { IUser } from '../../common/interfaces/interface.user';
@@ -264,5 +264,53 @@ export class UserService {
       this.logger.error(error);
       return null;
     }
+  }
+
+  public async getPatientByCode(code: string): Promise<UserEntity> {
+    const paciente = await this.userRepository.findOne({
+      where: {
+        deletedAt: null,
+        paciente: {
+          codigo: code,
+          doctor: null,
+        },
+      },
+      relations: {
+        paciente: true,
+      },
+    });
+
+    return paciente;
+  }
+  public async getUserByToken(token: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: {
+        deletedAt: null,
+        token: token,
+      },
+      relations: {
+        paciente: true,
+        doctor: true,
+        caregiver: true,
+      },
+    });
+
+    return user;
+  }
+
+  async updatePatientStatus(id: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        deletedAt: null,
+        id: id,
+      },
+      relations: {
+        paciente: true,
+      },
+    });
+
+    user.isActive = !user.isActive;
+
+    await this.userRepository.save(user);
   }
 }

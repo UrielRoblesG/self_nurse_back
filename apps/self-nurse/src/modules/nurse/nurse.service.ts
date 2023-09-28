@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateNurseDto } from './dto/create-nurse.dto';
 import { UpdateNurseDto } from './dto/update-nurse.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,8 @@ import { User } from '../../models/user';
 
 @Injectable()
 export class NurseService {
+  private readonly _logger = new Logger(NurseService.name);
+
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
@@ -68,11 +70,8 @@ export class NurseService {
     return new User(paciente);
   }
 
-  update(id: number, updateNurseDto: UpdateNurseDto) {
-    return `This action updates a #${id} nurse`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} nurse`;
-  }
+  async registrarPaciente(
+    nurse: UserEntity,
+    paciente: UserEntity,
+  ): Promise<any> {}
 }

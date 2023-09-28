@@ -70,14 +70,4 @@ export class NurseController {
       return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
     }
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNurseDto: UpdateNurseDto) {
-    return this.nurseService.update(+id, updateNurseDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.nurseService.remove(+id);
-  }
 }

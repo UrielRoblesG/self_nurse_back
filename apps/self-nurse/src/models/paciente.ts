@@ -11,7 +11,7 @@ export class Paciente {
   phone: string;
   codigo: string;
   status: CatPacienteEstatus;
-
+  birthday: string;
   constructor({
     id,
     gender,
@@ -21,6 +21,7 @@ export class Paciente {
     weight,
     idStatus,
     codigo,
+    birthday,
   }: PatientEntity) {
     this.id = id;
     this.genero = gender;
@@ -29,6 +30,7 @@ export class Paciente {
     this.height = height;
     this.weight = weight;
     this.codigo = codigo;
+    this.birthday = birthday;
     this.status = CatPacienteEstatus.FromPatientEntity(idStatus);
   }
 }

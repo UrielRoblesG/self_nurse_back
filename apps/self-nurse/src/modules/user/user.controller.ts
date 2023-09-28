@@ -3,17 +3,14 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
   Res,
   HttpStatus,
   Req,
-  Put,
   UseInterceptors,
   UploadedFile,
-  ParseFilePipeBuilder,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -27,8 +24,6 @@ import { Public } from '../../common/decorators/public.decorator';
 import { User } from '../../models/user';
 import { Response as Resp } from '../../common/responses/response';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { FileTypeValidationPipe } from '../../common/pipes/file-type-validation.pipe';
 
 @ApiTags('Usuarios')

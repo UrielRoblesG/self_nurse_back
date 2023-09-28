@@ -29,49 +29,6 @@ export class DoctorController {
 
   constructor(private readonly doctorService: DoctorService) {}
 
-  @Post()
-  create(@Body() createDoctorDto: CreateDoctorDto) {
-    return this.doctorService.create(createDoctorDto);
-  }
-
-  @Post('registrarPaciente/:token')
-  async registrarPaciente(
-    @Param('token') token: string,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
-    try {
-      const user = req['user'];
-      const response = await this.doctorService.vicularPacienteADoctor(
-        user,
-        token,
-      );
-
-      switch (response.codigo) {
-        case 0:
-          return res
-            .status(HttpStatus.OK)
-            .json(new Resp('Ok', 'Operacion exitosa'));
-
-        case 2:
-          return res
-            .status(HttpStatus.BAD_REQUEST)
-            .json(new Resp('Errro', 'Error'));
-
-        case 3:
-        case 4:
-          return res
-            .status(HttpStatus.NOT_FOUND)
-            .json(new Resp('Error', 'No se encontraron registros'));
-        default:
-          break;
-      }
-    } catch (error) {
-      this._logger.error(error);
-      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
-    }
-  }
-
   @Get('obtenerPacientes')
   async findAll(@Req() req: Request, @Res() res: Response) {
     try {
