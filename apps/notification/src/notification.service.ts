@@ -44,12 +44,10 @@ export class NotificationService {
       const nurseIds = eventos.map(evento => evento.nurse.id);
   
       // 3. Consultar el repositorio de UserEntity para encontrar usuarios relacionados
-      const users = await this.userRepository.find({
-        where: [
-          { paciente: In(patientIds) },
-          { caregiver: In(nurseIds) }
-        ],
-      });
+      const users = await this.userRepository.createQueryBuilder('user')
+        .where('user.paciente IN (:...patientIds)', { patientIds })
+        .orWhere('user.caregiver IN (:...nurseIds)', { nurseIds })
+        .getMany();
   
       return users;
     
