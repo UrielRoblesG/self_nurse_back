@@ -18,6 +18,7 @@ import { UserService } from '../modules/user/user.service';
 import { DoctorService } from '../modules/doctor/doctor.service';
 import { NurseService } from '../modules/nurse/nurse.service';
 import { Socket } from 'socket.io';
+import { User } from '../models/user';
 
 @WebSocketGateway(80, { namespace: 'users' })
 export class UsersGateway
@@ -48,6 +49,8 @@ export class UsersGateway
 
     switch (user.idType) {
       case 2:
+        response = await this.nurseService.registrarPaciente(user, paciente);
+        this.server.to(paciente.id).emit('nurse_registrado', new User(user));
         break;
       case 3:
         response = await this.doctorService.vicularPacienteADoctor(
@@ -55,10 +58,10 @@ export class UsersGateway
           paciente,
         );
         this._logger.debug(response);
-        this.server.to(paciente.id).emit('doctor_registrado', user);
-        this.server.to(user.id).emit('paciente_registrado', response.paciente);
+        this.server.to(paciente.id).emit('doctor_registrado', new User(user));
         break;
     }
+    this.server.to(user.id).emit('paciente_registrado', response.status);
   }
 
   async handleConnection(client: any, ...args: any[]) {
@@ -86,6 +89,9 @@ export class UsersGateway
       const user = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('JWT_SECRET_KEY'),
       });
+      if (user.role == 'patient') {
+        await this.userService.updatePatientStatus(user.id);
+      }
 
       client.disconnect();
     } catch (error) {
