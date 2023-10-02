@@ -70,4 +70,28 @@ export class NurseController {
       return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
     }
   }
+
+  @Post('/registrar/:codigo')
+  async registrarPaciente(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param() codigo: string,
+  ) {
+    try {
+      // const user = req['user'];
+      // // const resp = await this.nurseService.registrarPaciente(user, codigo);
+      // switch (resp.codigo) {
+      //   case 1:
+      //   case 2:
+      //     return res
+      //       .status(HttpStatus.NOT_FOUND)
+      //       .json(new Resp('Not Found', resp.status));
+      //   case 0:
+      //     return res.status(HttpStatus.OK).json(new Resp('Ok', resp.status));
+      // }
+    } catch (error) {
+      this._logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
+    }
+  }
 }
