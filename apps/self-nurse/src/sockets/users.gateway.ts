@@ -61,7 +61,8 @@ export class UsersGateway
         this.server.to(paciente.id).emit('doctor_registrado', new User(user));
         break;
     }
-    this.server.to(user.id).emit('paciente_registrado', response.status);
+    const resp = { ...response, type: user.idType, user: new User(paciente) };
+    this.server.to(user.id).emit('paciente_registrado', resp);
   }
 
   async handleConnection(client: any, ...args: any[]) {
