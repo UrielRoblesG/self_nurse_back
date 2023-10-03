@@ -27,7 +27,12 @@ export class DoctorService {
       return { estatus: false, codigo: 2 };
     }
 
-    return { estatus: true, codigo: 0, paciente: userUpdated };
+    return {
+      status: 'OK',
+      codigo: 0,
+      user: new User(userUpdated),
+      type: user.idType,
+    };
   }
 
   async findOne(id: number) {

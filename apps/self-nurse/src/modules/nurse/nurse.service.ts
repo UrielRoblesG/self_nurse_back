@@ -84,6 +84,11 @@ export class NurseService {
 
     const resp = await this.userRepository.save(oPaciente);
 
-    return { status: 'OK', codigo: 0 };
+    return {
+      status: 'OK',
+      codigo: 0,
+      user: new User(resp),
+      type: oNurse.idType,
+    };
   }
 }
