@@ -57,7 +57,6 @@ export class UsersGateway
           user,
           paciente,
         );
-        this._logger.debug(response);
         this.server.to(paciente.id).emit('doctor_registrado', new User(user));
         break;
     }
