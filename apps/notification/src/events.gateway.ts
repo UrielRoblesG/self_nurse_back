@@ -21,8 +21,17 @@ import {
     }
 
     @Cron(CronExpression.EVERY_5_SECONDS)
+    async notificarUsuariosProximosEventos() {
+      const usuarios = await this.eventoService.obtenerUsuariosDeEventosProximos(new Date());
+      for (const usuario of usuarios) {
+        this.server.to(usuario.id.toString()).emit('proximos_eventos', true);
+      }
+      
+  }
+  
+
     async showEveryFiveMinutes() {
-      const eventos = await this.eventoService.obtenerEventosProximos(new Date());
+      const eventos = await this.eventoService.obtenerUsuariosDeEventosProximos(new Date());
   
       if (eventos.length <= 0) {
         return;

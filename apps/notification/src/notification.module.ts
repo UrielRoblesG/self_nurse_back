@@ -12,14 +12,12 @@ import { UserEntity } from 'apps/self-nurse/src/database/entities/user.entity';
   imports: [
     TypeOrmModule.forFeature([
       EventoEntity,
-      /*ViewGetPacienteEventos,*/
       UserEntity,
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     DatabaseModule,
   ],
-  /*controllers: [NotificationController],*/
-  providers: [/*NotificationService, */ EventsGateway, EventoService],
+  providers: [EventsGateway, EventoService],
 })
 export class NotificationModule {}
