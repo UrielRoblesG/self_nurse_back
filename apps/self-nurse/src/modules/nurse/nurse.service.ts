@@ -1,8 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateNurseDto } from './dto/create-nurse.dto';
-import { UpdateNurseDto } from './dto/update-nurse.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NurseEntity, UserEntity } from '../../database/entities';
+import { UserEntity } from '../../database/entities';
 import { Repository } from 'typeorm/repository/Repository';
 import { User } from '../../models/user';
 
@@ -71,7 +69,26 @@ export class NurseService {
   }
 
   async registrarPaciente(
-    nurse: UserEntity,
-    paciente: UserEntity,
-  ): Promise<any> {}
+    oNurse: UserEntity,
+    oPaciente: UserEntity,
+  ): Promise<any> {
+    if (oNurse == null) {
+      return { status: 'Enfermer@ no encontrado', codigo: 1 };
+    }
+
+    if (oPaciente == null) {
+      return { status: 'Paciente no encontrado', codigo: 2 };
+    }
+
+    oPaciente.paciente.nurse = oNurse.caregiver;
+
+    const resp = await this.userRepository.save(oPaciente);
+
+    return {
+      status: 'OK',
+      codigo: 0,
+      user: new User(resp),
+      type: oNurse.idType,
+    };
+  }
 }
