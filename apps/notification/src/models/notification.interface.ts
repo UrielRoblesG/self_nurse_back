@@ -1,6 +1,6 @@
 export interface INotification {
   title: string;
-  notification: string;
+  body: string;
   imageUrl?: string;
   type: number;
 }

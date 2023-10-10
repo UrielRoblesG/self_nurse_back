@@ -40,4 +40,21 @@ export class FirebaseService {
       notification: notification,
     });
   }
+
+  public async sendSingleNotification(
+    token: string,
+    notification: INotification,
+  ) {
+    await firebase.messaging().send({
+      token: token,
+
+      notification: {
+        title: notification.title,
+        body: notification.body,
+      },
+      android: {
+        priority: 'high',
+      },
+    });
+  }
 }

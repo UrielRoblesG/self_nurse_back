@@ -15,8 +15,6 @@ export class EventoService {
   constructor(
     @InjectRepository(EventoEntity)
     private readonly eventoRepository: Repository<EventoEntity>,
-    @InjectRepository(ViewGetPacienteEventos)
-    private readonly viewGetEventoPaciente: Repository<ViewGetPacienteEventos>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
