@@ -9,7 +9,7 @@ import {
   import { Injectable, Logger } from '@nestjs/common';
   
   @Injectable()
-  @WebSocketGateway()
+  @WebSocketGateway(80, { namespace: 'users' })
   export class EventsGateway implements OnGatewayInit {
     private readonly logger: Logger = new Logger(EventsGateway.name);
     @WebSocketServer() server: Server;
@@ -26,18 +26,5 @@ import {
       for (const usuario of usuarios) {
         this.server.to(usuario.id.toString()).emit('proximos_eventos', true);
       }
-      
-  }
-  
-
-    async showEveryFiveMinutes() {
-      const eventos = await this.eventoService.obtenerUsuariosDeEventosProximos(new Date());
-  
-      if (eventos.length <= 0) {
-        return;
-      }
-      this.logger.log('Emitting event to all clients.');
-      this.server.emit('send_notification', 'hola, si se emitieron datos');
-      //this.server.emit('send_notification', eventos);
     }
   }
