@@ -24,8 +24,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
-    SocketsModule,
-    CloudinaryModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     DatabaseModule,

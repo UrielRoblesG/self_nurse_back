@@ -7,14 +7,9 @@ import {
 } from '@nestjs/common';
 import { Encrypt } from '../../utils/encrypt';
 import { LoginAuthDto } from './dto/login-auth.dto';
-import { JwtService } from '@nestjs/jwt';
 import { IAuthRespose } from '../../common/interfaces/interface.auth.response';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { UserService } from '../user/user.service';
-import { ConfigService } from '@nestjs/config';
-import { Paciente } from '../../models/paciente';
-import { Cuidador } from '../../models/cuidador';
-import { Doctor } from '../../models/doctor';
 import { User } from '../../models/user';
 
 @Injectable()
