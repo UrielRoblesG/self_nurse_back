@@ -4,6 +4,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsString,
   MinLength,
 } from 'class-validator';
 import { IUser } from '../../../common/interfaces/interface.user';
@@ -48,6 +49,10 @@ export class CreateUserDto implements IUser {
   @IsNotEmpty()
   @IsNumber()
   edad: number;
+
+  @ApiProperty()
+  @IsString()
+  deviceToken: string;
 
   @ApiProperty()
   paciente?: CreatePatientDto;

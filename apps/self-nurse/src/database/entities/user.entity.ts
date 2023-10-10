@@ -66,6 +66,15 @@ export class UserEntity {
   @Column({ nullable: true, length: 255 })
   imgUrl: string;
 
+  @Column({
+    nullable: false,
+    default: '',
+    type: 'varchar',
+    length: 255,
+    name: 'deviceToken',
+  })
+  deviceToken: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;
 

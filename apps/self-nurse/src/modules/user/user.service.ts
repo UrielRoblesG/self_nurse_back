@@ -198,6 +198,7 @@ export class UserService {
       email: object.email,
       password: object.password,
       phone: object.phone,
+      deviceToken: object.deviceToken,
       paciente,
     });
     return await this.userRepository.save(user);
