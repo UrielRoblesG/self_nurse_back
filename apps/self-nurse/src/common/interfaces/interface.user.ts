@@ -13,5 +13,6 @@ export interface IUser {
   phone: string;
   type: number;
   token: string;
+  deviceToken: string;
   img: string;
 }

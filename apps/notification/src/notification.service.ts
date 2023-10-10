@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EventoEntity, UserEntity } from 'apps/self-nurse/src/database/entities/';
+import {
+  EventoEntity,
+  UserEntity,
+} from 'apps/self-nurse/src/database/entities/';
 import { Between, Repository, In } from 'typeorm';
 
 @Injectable()
@@ -13,17 +16,17 @@ export class NotificationService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
-  
+
   async obtenerUsuariosDeEventosProximos(date: Date): Promise<UserEntity[]> {
     try {
       const startDate = date.getTime();
       const endDate = startDate + 1000 * 60 * 5;
-    
+
       const parsedStartDate = new Date(startDate);
       const parsedEndDate = new Date(endDate);
-    
+
       // 1. Obtener los eventos próximos
-      const [eventos,count] = await this.eventoRepository.findAndCount({
+      const [eventos, count] = await this.eventoRepository.findAndCount({
         relations: ['paciente', 'nurse'],
         where: {
           deletedAt: null,
@@ -38,23 +41,22 @@ export class NotificationService {
         this._logger.log('No hay recordatorios pendientes');
         return [];
       }
-  
+
       // 2. Extraer los ID de los pacientes y nurses
-      const patientIds = eventos.map(evento => evento.paciente.id);
-      const nurseIds = eventos.map(evento => evento.nurse.id);
-  
+      const patientIds = eventos.map((evento) => evento.paciente.id);
+      const nurseIds = eventos.map((evento) => evento.nurse.id);
+
       // 3. Consultar el repositorio de UserEntity para encontrar usuarios relacionados
-      const users = await this.userRepository.createQueryBuilder('user')
+      const users = await this.userRepository
+        .createQueryBuilder('user')
         .where('user.paciente IN (:...patientIds)', { patientIds })
         .orWhere('user.caregiver IN (:...nurseIds)', { nurseIds })
         .getMany();
-  
+
       return users;
-    
     } catch (error) {
       this._logger.error('Error en servicio al buscar usuarios:', error);
       return [];
     }
   }
-  
 }

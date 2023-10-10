@@ -16,6 +16,7 @@ export class User implements IUser {
   type: number;
   token: string;
   img: string;
+  deviceToken: string;
   paciente?: Paciente;
   cuidador?: Cuidador;
   doctor?: Doctor;
@@ -32,6 +33,7 @@ export class User implements IUser {
     this.type = user.idType;
     this.token = user.token;
     this.img = user.imgUrl;
+    this.deviceToken = user.deviceToken;
 
     switch (this.type) {
       case 1:

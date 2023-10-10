@@ -4,6 +4,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsString,
   MinLength,
 } from 'class-validator';
 import { IUser } from '../../../common/interfaces/interface.user';
@@ -38,6 +39,10 @@ export class RegisterAuthDto implements IUser {
   @ApiProperty()
   @MinLength(10)
   phone: string;
+
+  @ApiProperty()
+  @IsString()
+  deviceToken: string;
 
   @ApiProperty()
   status?: boolean;
