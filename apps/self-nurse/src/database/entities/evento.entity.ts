@@ -19,7 +19,7 @@ export class EventoEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   alerta: string;
 
-  @Column({ name: 'fecha', type: 'datetime' })
+  @Column({ name: 'fecha', type: 'varchar', length: 25 })
   fecha: Date;
 
   @CreateDateColumn({ name: 'created_at' })

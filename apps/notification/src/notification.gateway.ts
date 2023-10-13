@@ -32,17 +32,21 @@ export class NotificationGateway implements OnGatewayInit {
         await this.notificationService.obtenerUsuariosDeEventosProximos(
           currentDate,
         );
-
       //redundancia para evitar errores en caso de null
       if (users && users.length > 0) {
         this.logger.log(`Usuarios encontrados: ${users.length}`);
         // this.server.emit('hola_mundo', `Usuarios relacionados con eventos próximos: ${users.length}`);
 
-        const firebaseInstance = FirebaseService.getInstance();
         let devicesId: string[];
+        const firebaseInstance = FirebaseService.getInstance();
         users.forEach((user) => devicesId.push(user.deviceToken));
-
-        // firebaseInstance.sendNotificationMulticast();
+        const notification = new Notification('Titulo provisional', {
+          body: 'Body de prueba',
+        });
+        await firebaseInstance.sendNotificationMulticast(
+          devicesId,
+          notification,
+        );
       } else {
         this.logger.log(
           'No se encontraron usuarios relacionados con eventos próximos.',

@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import * as firebase from 'firebase-admin';
 import * as path from 'path';
-import { INotification } from '../models/notification.interface';
 
 export class FirebaseService {
   private readonly _logger = new Logger(FirebaseService.name);
@@ -33,11 +32,28 @@ export class FirebaseService {
 
   public async sendNotificationMulticast(
     tokens: string[],
-    notification: INotification,
+    notification: Notification,
   ) {
     await firebase.messaging().sendEachForMulticast({
       tokens: tokens,
       notification: notification,
+    });
+  }
+
+  public async sendSingleNotification(
+    token: string,
+    notification: Notification,
+  ) {
+    await firebase.messaging().send({
+      token: token,
+
+      notification: {
+        title: notification.title,
+        body: notification.body,
+      },
+      android: {
+        priority: 'high',
+      },
     });
   }
 }

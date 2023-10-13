@@ -15,8 +15,6 @@ export class EventoService {
   constructor(
     @InjectRepository(EventoEntity)
     private readonly eventoRepository: Repository<EventoEntity>,
-    @InjectRepository(ViewGetPacienteEventos)
-    private readonly viewGetEventoPaciente: Repository<ViewGetPacienteEventos>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
@@ -39,7 +37,7 @@ export class EventoService {
         });
         evento = this.eventoRepository.create();
         evento.alerta = createEventoDto.alerta;
-        evento.fecha = createEventoDto.fecha;
+        evento.fecha = new Date(createEventoDto.fecha);
         evento.nurse = paciente.paciente.nurse;
         evento.paciente = paciente.paciente;
         evento.tipo = createEventoDto.tipo;
