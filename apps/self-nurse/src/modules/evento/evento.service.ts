@@ -37,7 +37,7 @@ export class EventoService {
         });
         evento = this.eventoRepository.create();
         evento.alerta = createEventoDto.alerta;
-        evento.fecha = createEventoDto.fecha;
+        evento.fecha = new Date(createEventoDto.fecha);
         evento.nurse = paciente.paciente.nurse;
         evento.paciente = paciente.paciente;
         evento.tipo = createEventoDto.tipo;

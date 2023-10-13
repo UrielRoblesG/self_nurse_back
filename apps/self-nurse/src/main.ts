@@ -6,6 +6,7 @@ import { Logger } from '@nestjs/common';
 async function bootstrap() {
   const _logger = new Logger();
   const app = await NestFactory.create(AppModule);
+  _logger.debug(new Date().toString());
 
   const config = new DocumentBuilder()
     .setTitle('Sef Nurse Documentation')
