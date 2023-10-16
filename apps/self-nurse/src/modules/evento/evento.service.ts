@@ -74,14 +74,6 @@ export class EventoService {
     }
   }
 
-  private DateToUtc(date: Date): Date {
-    var utcDate = utcToZonedTime(date, 'America/Mexico_city');
-
-    this._logger.debug(new Date(utcDate));
-    this._logger.debug(date.toISOString());
-    return new Date(utcDate);
-  }
-
   async findAllEvents(user: any, day: Date): Promise<Evento[]> {
     const date = parseISO(day.toString());
     const start = startOfDay(date);
