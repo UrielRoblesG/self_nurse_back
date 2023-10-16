@@ -4,6 +4,7 @@ import {
   EventoEntity,
   UserEntity,
 } from 'apps/self-nurse/src/database/entities/';
+import { ViewGetPacienteEventos } from 'apps/self-nurse/src/database/views';
 import { Between, Repository, In } from 'typeorm';
 
 @Injectable()
@@ -15,6 +16,8 @@ export class NotificationService {
     private readonly eventoRepository: Repository<EventoEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(ViewGetPacienteEventos)
+    private readonly vGetEventos: Repository<ViewGetPacienteEventos>,
   ) {}
 
   async obtenerUsuariosDeEventosProximos(date: Date): Promise<UserEntity[]> {
@@ -34,6 +37,9 @@ export class NotificationService {
           recordar: true,
         },
       });
+
+      // Prueba
+      const proximos = await this.vGetEventos.find({});
 
       this._logger.debug(`Cantidad de eventos próximos: ${count}`);
 

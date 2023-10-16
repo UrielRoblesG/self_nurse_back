@@ -12,6 +12,7 @@ import {
   UserEntity,
 } from 'apps/self-nurse/src/database/entities';
 import { EventoService } from 'apps/self-nurse/src/modules/evento/evento.service';
+import { ViewGetPacienteEventos } from 'apps/self-nurse/src/database/views';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EventoService } from 'apps/self-nurse/src/modules/evento/evento.service
       NurseEntity,
       PatientEntity,
       UserEntity,
+      ViewGetPacienteEventos,
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),

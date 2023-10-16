@@ -14,8 +14,8 @@ export class CreateEventoDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  fecha: string;
+  @IsDate()
+  fecha: Date;
 
   @ApiProperty()
   @IsNotEmpty()

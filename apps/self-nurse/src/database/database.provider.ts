@@ -41,6 +41,8 @@ export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
         ViewGetPacienteEventos,
         // ViewGetUserNurse,
       ],
+      // timezone: '+6:00',
+      timezone: 'Z',
       synchronize: isDevMode,
       autoLoadEntities: true,
       logging: config.get('DB_LOGGING'),

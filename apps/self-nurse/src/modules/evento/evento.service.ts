@@ -7,7 +7,7 @@ import { Response } from '../../common/responses/response';
 import { ViewGetPacienteEventos } from '../../database/views';
 import { endOfDay, parseISO, startOfDay } from 'date-fns';
 import { Evento } from '../../models';
-
+import { utcToZonedTime } from 'date-fns-tz';
 @Injectable()
 export class EventoService {
   private readonly _logger = new Logger();
@@ -37,7 +37,7 @@ export class EventoService {
         });
         evento = this.eventoRepository.create();
         evento.alerta = createEventoDto.alerta;
-        evento.fecha = new Date(createEventoDto.fecha);
+        evento.fecha = createEventoDto.fecha;
         evento.nurse = paciente.paciente.nurse;
         evento.paciente = paciente.paciente;
         evento.tipo = createEventoDto.tipo;
@@ -55,7 +55,7 @@ export class EventoService {
         });
         evento = this.eventoRepository.create();
         evento.alerta = createEventoDto.alerta;
-        evento.fecha = new Date(createEventoDto.fecha);
+        evento.fecha = createEventoDto.fecha;
         evento.nurse = nurse.caregiver;
         evento.paciente = nurse.caregiver.paciente;
         evento.tipo = createEventoDto.tipo;
@@ -72,6 +72,14 @@ export class EventoService {
     } catch (error) {
       return null;
     }
+  }
+
+  private DateToUtc(date: Date): Date {
+    var utcDate = utcToZonedTime(date, 'America/Mexico_city');
+
+    this._logger.debug(new Date(utcDate));
+    this._logger.debug(date.toISOString());
+    return new Date(utcDate);
   }
 
   async findAllEvents(user: any, day: Date): Promise<Evento[]> {
