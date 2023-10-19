@@ -10,6 +10,7 @@ import { NotificationService } from './notification.service';
 import { FirebaseService } from './services/firebase.service';
 import { Notificacion } from '../model/notificacion';
 
+// TODO: Crear modelo para los mensajes de la notificacion
 @Injectable()
 @WebSocketGateway()
 export class NotificationGateway implements OnGatewayInit {
