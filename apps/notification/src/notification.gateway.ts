@@ -8,6 +8,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Injectable, Logger } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { FirebaseService } from './services/firebase.service';
+import { Notificacion } from '../model/notificacion';
 
 @Injectable()
 @WebSocketGateway()
@@ -33,16 +34,15 @@ export class NotificationGateway implements OnGatewayInit {
           currentDate,
         );
       //redundancia para evitar errores en caso de null
+
       if (users && users.length > 0) {
         this.logger.log(`Usuarios encontrados: ${users.length}`);
         // this.server.emit('hola_mundo', `Usuarios relacionados con eventos próximos: ${users.length}`);
 
-        let devicesId: string[];
+        let devicesId: string[] = [];
         const firebaseInstance = FirebaseService.getInstance();
         users.forEach((user) => devicesId.push(user.deviceToken));
-        const notification = new Notification('Titulo provisional', {
-          body: 'Body de prueba',
-        });
+        const notification = new Notificacion('Titulo', 'Body');
         await firebaseInstance.sendNotificationMulticast(
           devicesId,
           notification,

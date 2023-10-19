@@ -29,6 +29,7 @@ export class NotificationService {
       const parsedEndDate = new Date(endDate);
 
       // 1. Obtener los eventos próximos
+      // TODO: No obtiene ningun evento
       const [eventos, count] = await this.eventoRepository.findAndCount({
         relations: ['paciente', 'nurse'],
         where: {
@@ -39,18 +40,20 @@ export class NotificationService {
       });
 
       // Prueba
+      // TODO: Algo provisional que hice
       const proximos = await this.vGetEventos.find({});
 
       this._logger.debug(`Cantidad de eventos próximos: ${count}`);
 
-      if (count <= 0) {
+      if (proximos.length <= 0) {
         this._logger.log('No hay recordatorios pendientes');
         return [];
       }
 
       // 2. Extraer los ID de los pacientes y nurses
-      const patientIds = eventos.map((evento) => evento.paciente.id);
-      const nurseIds = eventos.map((evento) => evento.nurse.id);
+      // TODO: Cambie esto
+      const patientIds = proximos.map((evento) => evento.pacienteId);
+      const nurseIds = proximos.map((evento) => evento.nurseId);
 
       // 3. Consultar el repositorio de UserEntity para encontrar usuarios relacionados
       const users = await this.userRepository
