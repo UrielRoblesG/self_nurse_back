@@ -11,6 +11,7 @@ import { EventoEntity } from '../entities';
       .addSelect('evento.pacienteId', 'pacienteId')
       .addSelect('evento.nurseId', 'nurseId')
       .addSelect('evento.recordar', 'recordar')
+      .addSelect('evento.frecuencia', 'frecuencia')
       .from(EventoEntity, 'evento')
       .where('evento.deleted_at is null')
       .where('evento.recordar = true')
@@ -37,4 +38,7 @@ export class ViewGetPacienteEventos {
 
   @ViewColumn()
   recordar: boolean;
+
+  @ViewColumn()
+  frecuencia: string;
 }
