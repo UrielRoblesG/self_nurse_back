@@ -8,6 +8,7 @@ import {
 } from 'apps/self-nurse/src/database/entities/';
 import { ViewGetPacienteEventos } from 'apps/self-nurse/src/database/views';
 import { Between, Repository, In } from 'typeorm';
+import { addDays } from 'date-fns'; 
 import { Notificacion } from '../model/notificacion';
 
 @Injectable()
@@ -45,6 +46,31 @@ export class NotificationService {
       // TODO: Prueba
       // TODO: Algo provisional que hice
       const proximos = await this.vGetEventos.find({});
+
+      const eventosSemanales = proximos.filter((evento) => evento.frecuencia === "S");
+      try {
+        // Agregar una semana (7 días) a la fecha de los eventos semanales
+        eventosSemanales.forEach((evento) => {
+          evento.fecha = addDays(evento.fecha, 7);
+        });
+        /*
+        const eventosOriginales = await this.vGetEventos.findByIds(
+          eventosSemanales.map((evento) => evento.id)
+        );
+
+        
+        eventosOriginales.forEach((eventoOriginal) => {
+          const eventoModificado = eventosSemanales.find((e) => e.id === eventoOriginal.id);
+          if (eventoModificado) {
+            eventoOriginal.fecha = eventoModificado.fecha;
+          }
+        });
+
+        
+        await this.vGetEventos.save(eventosOriginales);*/
+      } catch (error) {
+        this._logger.log(error+' No se pudo actualizar la fecha de los eventos semanales');
+      } 
 
       this._logger.debug(`Cantidad de eventos próximos: ${proximos.length}`);
 
@@ -94,14 +120,14 @@ export class NotificationService {
       let ids: number[] = [];
       proximos.forEach((e) => ids.push(e.id));
 
-      await this.eventoRepository
-        .createQueryBuilder()
-        .update()
-        .set({ fecha: () => 'Date(fecha, INTERVAL 7 DAY)' })
-        .where('id IN (:...ids)', { ids })
-        .andWhere('estatus = :estatus', { estatus: 'A' })
-        .andWhere('frecuencia = :frecuencia', { frecuencia: 'A' })
-        .execute();
+      // await this.eventoRepository
+      //   .createQueryBuilder()
+      //   .update()
+      //   .set({ fecha: () => 'Date(fecha, INTERVAL 7 DAY)' })
+      //   .where('id IN (:...ids)', { ids })
+      //   .andWhere('estatus = :estatus', { estatus: 'A' })
+      //   .andWhere('frecuencia = :frecuencia', { frecuencia: 'A' })
+      //   .execute();
 
       await this.eventoRepository
         .createQueryBuilder()
