@@ -31,8 +31,13 @@ export class EventoEntity {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date;
 
+  // U = Unico --- S = Semanal
   @Column({ name: 'frecuencia', type: 'char', length: 1, default: 'U' })
   frecuencia: string;
+
+  // A = Activo --- I = Inactivo
+  @Column({ name: 'estatus', type: 'char', length: 1, default: 'A' })
+  estatus: string;
 
   @ManyToOne(() => PatientEntity, (p) => p.eventos)
   paciente: PatientEntity;

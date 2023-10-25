@@ -11,9 +11,13 @@ import { EventoEntity } from '../entities';
       .addSelect('evento.pacienteId', 'pacienteId')
       .addSelect('evento.nurseId', 'nurseId')
       .addSelect('evento.recordar', 'recordar')
+      .addSelect('evento.tipo', 'tipo')
+      .addSelect('evento.frecuencia', 'frecuencia')
+      .addSelect('evento.estatus', 'estatus')
       .from(EventoEntity, 'evento')
       .where('evento.deleted_at is null')
       .where('evento.recordar = true')
+      .where('evento.estatus = A')
       .where(
         "evento.fecha BETWEEN CURRENT_TIMESTAMP() and ADDTIME(CURRENT_TIMESTAMP(), '00:05:00')",
       )
@@ -37,4 +41,13 @@ export class ViewGetPacienteEventos {
 
   @ViewColumn()
   recordar: boolean;
+
+  @ViewColumn()
+  frecuencia: string;
+
+  @ViewColumn()
+  estatus: string;
+
+  @ViewColumn()
+  tipo: number;
 }

@@ -9,6 +9,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { FirebaseService } from './services/firebase.service';
 import { Notificacion } from '../model/notificacion';
+import { subHours } from 'date-fns';
 
 // TODO: Crear modelo para los mensajes de la notificacion
 @Injectable()
@@ -24,10 +25,12 @@ export class NotificationGateway implements OnGatewayInit {
     this.logger.log('Socket.io service initialized.');
   }
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_5_SECONDS, {
+    timeZone: 'America/Mexico_City',
+  })
   async buscaUsuarios() {
     this.logger.log('Buscando eventos próximos y sus usuarios relacionados...');
-    const currentDate = new Date();
+    const currentDate = subHours(new Date(), 1);
 
     try {
       const users =

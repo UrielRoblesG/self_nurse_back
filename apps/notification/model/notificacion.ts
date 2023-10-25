@@ -12,10 +12,18 @@ export class Notificacion implements Notification {
   tag: string;
   title: string;
 
-  constructor(titulo: string, body: string, data?: any) {
-    this.title = titulo;
-    this.body = body;
-    this.data = data;
+  public constructor();
+  public constructor(titulo: string, body: string, data?: IPayloadNotification);
+
+  public constructor(...args: any[]) {
+    if (args.length == 3) {
+      this.title = args[0];
+      this.body = args[1];
+      this.data = args[2];
+    } else if (args.length == 2) {
+      this.title = args[0];
+      this.body = args[1];
+    }
   }
 
   close(): void {

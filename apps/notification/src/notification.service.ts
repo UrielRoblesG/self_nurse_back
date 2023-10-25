@@ -2,10 +2,13 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   EventoEntity,
+  NurseEntity,
+  PatientEntity,
   UserEntity,
 } from 'apps/self-nurse/src/database/entities/';
 import { ViewGetPacienteEventos } from 'apps/self-nurse/src/database/views';
 import { Between, Repository, In } from 'typeorm';
+import { Notificacion } from '../model/notificacion';
 
 @Injectable()
 export class NotificationService {
@@ -39,11 +42,11 @@ export class NotificationService {
         },
       });
 
-      // Prueba
+      // TODO: Prueba
       // TODO: Algo provisional que hice
       const proximos = await this.vGetEventos.find({});
 
-      this._logger.debug(`Cantidad de eventos próximos: ${count}`);
+      this._logger.debug(`Cantidad de eventos próximos: ${proximos.length}`);
 
       if (proximos.length <= 0) {
         this._logger.log('No hay recordatorios pendientes');
@@ -60,7 +63,54 @@ export class NotificationService {
         .createQueryBuilder('user')
         .where('user.paciente IN (:...patientIds)', { patientIds })
         .orWhere('user.caregiver IN (:...nurseIds)', { nurseIds })
+        .leftJoinAndSelect('user.paciente', 'paciente')
+        .leftJoinAndSelect('user.caregiver', 'cuidador')
         .getMany();
+
+      // 4. Crear la notificacion para cada usuario
+      let notificaciones : Notificacion[]= [];
+      users.forEach((u) => {
+        let n = new Notificacion();
+        let e: ViewGetPacienteEventos;
+
+        if (u.idType == 1)
+          e = proximos.find((e) => e.pacienteId == u.paciente.id);
+        else if (u.idType == 2)
+          e = proximos.find((e) => e.nurseId == u.caregiver.id);
+
+        if (e.tipo == 1) n.title = 'Medicamento';
+        else if (e.tipo == 2) n.title = 'Cita medica';
+
+        n.body = e.alerta;
+        n.data = {
+          dispositivo: u.deviceToken,
+          fecha: e.fecha,
+          tipo: e.tipo,
+        };
+        notificaciones.push(n);
+      });
+
+      // 5. Revisar la frecuencia y actualizar en caso de ser semanal
+      let ids: number[] = [];
+      proximos.forEach((e) => ids.push(e.id));
+
+      await this.eventoRepository
+        .createQueryBuilder()
+        .update()
+        .set({ fecha: () => 'Date(fecha, INTERVAL 7 DAY)' })
+        .where('id IN (:...ids)', { ids })
+        .andWhere('estatus = :estatus', { estatus: 'A' })
+        .andWhere('frecuencia = :frecuencia', { frecuencia: 'A' })
+        .execute();
+
+      await this.eventoRepository
+        .createQueryBuilder()
+        .update()
+        .set({ estatus: 'I' })
+        .where('estatus = :estatus', { estatus: 'A' })
+        .where('id IN (:...ids)', { ids })
+        .andWhere('frecuencia = :f', { f: 'U' })
+        .execute();
 
       return users;
     } catch (error) {
