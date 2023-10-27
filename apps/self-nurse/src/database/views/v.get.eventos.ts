@@ -17,7 +17,7 @@ import { EventoEntity } from '../entities';
       .from(EventoEntity, 'evento')
       .where('evento.deleted_at is null')
       .where('evento.recordar = true')
-      .where('evento.estatus = A')
+      .where('evento.estatus = \'A\'')
       .where(
         "evento.fecha BETWEEN CURRENT_TIMESTAMP() and ADDTIME(CURRENT_TIMESTAMP(), '00:05:00')",
       )

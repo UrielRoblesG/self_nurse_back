@@ -24,7 +24,7 @@ export class NotificationService {
     private readonly vGetEventos: Repository<ViewGetPacienteEventos>,
   ) {}
 
-  async obtenerUsuariosDeEventosProximos(date: Date): Promise<UserEntity[]> {
+  async obtenerNotificacionesProximas(date: Date): Promise<Notificacion[]> {
     try {
       const startDate = date.getTime();
       const endDate = startDate + 1000 * 60 * 5;
@@ -53,6 +53,8 @@ export class NotificationService {
         eventosSemanales.forEach((evento) => {
           evento.fecha = addDays(evento.fecha, 7);
         });
+
+        this.eventoRepository.save(eventosSemanales);
         /*
         const eventosOriginales = await this.vGetEventos.findByIds(
           eventosSemanales.map((evento) => evento.id)
@@ -106,12 +108,11 @@ export class NotificationService {
 
         if (e.tipo == 1) n.title = 'Medicamento';
         else if (e.tipo == 2) n.title = 'Cita medica';
-
         n.body = e.alerta;
         n.data = {
           dispositivo: u.deviceToken,
-          fecha: e.fecha,
-          tipo: e.tipo,
+          fecha: e.fecha.toISOString(),
+          tipo: `${e.tipo}`,
         };
         notificaciones.push(n);
       });
@@ -138,7 +139,7 @@ export class NotificationService {
         .andWhere('frecuencia = :f', { f: 'U' })
         .execute();
 
-      return users;
+      return notificaciones;
     } catch (error) {
       this._logger.error('Error en servicio al buscar usuarios:', error);
       return [];

@@ -13,7 +13,7 @@ export class Notificacion implements Notification {
   title: string;
 
   public constructor();
-  public constructor(titulo: string, body: string, data?: IPayloadNotification);
+  public constructor(titulo: string, body: string, data?: any);
 
   public constructor(...args: any[]) {
     if (args.length == 3) {

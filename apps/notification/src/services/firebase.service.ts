@@ -31,11 +31,11 @@ export class FirebaseService {
   }
 
   public async sendNotificationMulticast(
-    tokens: string[],
+    tokens: string,
     notification: Notification,
   ) {
     await firebase.messaging().sendEachForMulticast({
-      tokens: tokens,
+      tokens: [tokens],
       notification: notification,
     });
   }
@@ -46,11 +46,11 @@ export class FirebaseService {
   ) {
     await firebase.messaging().send({
       token: token,
-
-      notification: {
+      notification: { 
         title: notification.title,
         body: notification.body,
       },
+      data: notification.data,
       android: {
         priority: 'high',
       },

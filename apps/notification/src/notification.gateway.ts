@@ -25,7 +25,7 @@ export class NotificationGateway implements OnGatewayInit {
     this.logger.log('Socket.io service initialized.');
   }
 
-  @Cron(CronExpression.EVERY_5_SECONDS, {
+  @Cron("0 */4 * * * *", {
     timeZone: 'America/Mexico_City',
   })
   async buscaUsuarios() {
@@ -33,24 +33,28 @@ export class NotificationGateway implements OnGatewayInit {
     const currentDate = subHours(new Date(), 1);
 
     try {
-      const users =
-        await this.notificationService.obtenerUsuariosDeEventosProximos(
+      const notificaciones =
+        await this.notificationService.obtenerNotificacionesProximas(
           currentDate,
         );
       //redundancia para evitar errores en caso de null
 
-      if (users && users.length > 0) {
-        this.logger.log(`Usuarios encontrados: ${users.length}`);
+      if (notificaciones && notificaciones.length > 0) {
+        this.logger.log(`Número de notificaciones a enviar: ${notificaciones.length}`);
         // this.server.emit('hola_mundo', `Usuarios relacionados con eventos próximos: ${users.length}`);
 
-        let devicesId: string[] = [];
         const firebaseInstance = FirebaseService.getInstance();
-        users.forEach((user) => devicesId.push(user.deviceToken));
-        const notification = new Notificacion('Titulo', 'Body');
-        await firebaseInstance.sendNotificationMulticast(
-          devicesId,
-          notification,
-        );
+        notificaciones.forEach( async (n) => {
+          try {
+
+            await firebaseInstance.sendSingleNotification(
+              n.data['dispositivo'],
+              n,
+            );
+          } catch(e) {
+            this.logger.error(e);
+          }
+        })
       } else {
         this.logger.log(
           'No se encontraron usuarios relacionados con eventos próximos.',
