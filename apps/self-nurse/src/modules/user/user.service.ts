@@ -129,6 +129,21 @@ export class UserService {
     }
   }
 
+  async findByAppToken(token : string) : Promise<UserEntity> {
+    try {
+      const exist = await this.userRepository.findOneBy({
+        deletedAt: null,
+        deviceToken: token
+      });
+
+
+      return exist;
+    } catch (error) {
+      this.logger.error(error);
+    }  
+  }
+
+
   async findOneById(id: number): Promise<UserEntity> {
     try {
       const user = await this.userRepository.findOne({

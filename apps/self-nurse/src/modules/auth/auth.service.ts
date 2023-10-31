@@ -38,6 +38,13 @@ export class AuthService {
       );
     }
 
+    const userWithTokenDevice = await this.userService.findByAppToken(user.deviceToken);
+
+    if (userWithTokenDevice) {
+      userWithTokenDevice.deviceToken = '';
+      this.userService.save(userWithTokenDevice);
+    }
+    findUser.deviceToken = user.deviceToken;
     findUser.isActive = true;
     await this.userService.save(findUser);
 
