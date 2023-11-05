@@ -7,3 +7,4 @@ export { CatUserType } from './cat.user.type';
 export { CatUserRelationshipEntity } from './cat.user.relationship.entity';
 export { CatRelationshipEntity } from './cat.relationship.enity';
 export { UserEntity } from './user.entity';
+export {VitalSignsEntity} from '../../modules/paciente/entities/vital-signs.entity'
