@@ -11,6 +11,7 @@ import {
   CatRelationshipEntity,
   CatPatientStatusEntity,
   EventoEntity,
+  VitalSignsEntity,
 } from './entities/index';
 import { ConnectionOptions } from 'typeorm/connection/ConnectionOptions';
 import { ViewGetPacienteEventos, ViewGetUserNurse } from './views';
@@ -39,6 +40,7 @@ export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
         CatPatientStatusEntity,
         EventoEntity,
         ViewGetPacienteEventos,
+        VitalSignsEntity,
         // ViewGetUserNurse,
       ],
       // timezone: '+6:00',
