@@ -35,3 +35,8 @@ lerna-debug.log*
 !.vscode/extensions.json
 .vscode/
 .env
+*.png
+*.jpeg
+*.jpg
+/images/uploads
+push-notification-key.json
