@@ -232,6 +232,7 @@ export class UserService {
       password: user.password,
       phone: user.phone,
       caregiver: caregiver,
+      deviceToken: user.deviceToken
     });
     return await this.userRepository.save(u);
   }
@@ -249,6 +250,7 @@ export class UserService {
       password: user.password,
       phone: user.phone,
       doctor: doctor,
+      deviceToken: user.deviceToken
     });
 
     return await this.userRepository.save(u);

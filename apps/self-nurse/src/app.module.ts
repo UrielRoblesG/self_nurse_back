@@ -1,5 +1,4 @@
-import { SocketsModule } from './sockets/sockets.module';
-import { CloudinaryModule } from './modules/user/cloudinary/cloudinary.module';
+
 import { PatientStatusController } from './modules/admin/patient.status/patient.status.controller';
 import { PatientStatusModule } from './modules/admin/patient.status/patient.status.module';
 import { Module } from '@nestjs/common';

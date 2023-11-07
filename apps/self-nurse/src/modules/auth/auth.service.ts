@@ -83,7 +83,12 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const userWithTokenDevice = await this.userService.findByAppToken(registerAuthDto.deviceToken);
 
+    if (userWithTokenDevice) {
+      userWithTokenDevice.deviceToken = '';
+      this.userService.save(userWithTokenDevice);
+    }
     const user = await this.userService.create(registerAuthDto);
 
     return user;

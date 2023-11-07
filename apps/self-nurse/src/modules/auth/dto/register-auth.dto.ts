@@ -60,5 +60,6 @@ export class RegisterAuthDto implements IUser {
   @ApiProperty()
   doctor?: CreateDoctorDto;
 
+  @ApiProperty()
   token: string;
 }
