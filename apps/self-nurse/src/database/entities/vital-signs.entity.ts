@@ -4,7 +4,7 @@ import { UserEntity } from './index';
 @Entity({ name: 'vitalSigns' })
 export class VitalSignsEntity {
   @PrimaryGeneratedColumn('increment')
-  id: string;
+  id: number;
 
   @Column({ type: 'int' })
   oxigenacion: number;
