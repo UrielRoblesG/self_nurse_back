@@ -43,10 +43,10 @@ export class NurseController {
         .status(HttpStatus.OK)
         .json(new Resp('Exito', 'Operación exitosa', new User(nurse)));
     } catch (error) {
-      this._logger.error(error);
+      this._logger.warn(error);
       return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json(new Response('Error', error));
+        .status(HttpStatus.NOT_FOUND)
+        .json(new Resp('Error', error));
     }
   }
 

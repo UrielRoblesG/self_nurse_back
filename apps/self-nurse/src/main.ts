@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
-  const _logger = new Logger();
+  const _logger = new Logger('Main');
   const app = await NestFactory.create(AppModule);
   _logger.debug(new Date().toString());
 

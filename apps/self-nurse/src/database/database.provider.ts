@@ -11,7 +11,7 @@ import {
   CatRelationshipEntity,
   CatPatientStatusEntity,
   EventoEntity,
-  VitalSignsEntity,
+  VitalSignsEntity
 } from './entities/index';
 import { ConnectionOptions } from 'typeorm/connection/ConnectionOptions';
 import { ViewGetPacienteEventos, ViewGetUserNurse } from './views';
@@ -30,20 +30,18 @@ export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
       username: config.get('MYSQL_USER'),
       password: config.get('MYSQL_PASSWORD'),
       database: config.get('DB_NAME'),
-      // entities: [
-      //   UserEntity,
-      //   CatUserType,
-      //   PatientEntity,
-      //   DoctorEntity,
-      //   NurseEntity,
-      //   CatRelationshipEntity,
-      //   CatPatientStatusEntity,
-      //   EventoEntity,
-      //   ViewGetPacienteEventos,
-      //   VitalSignsEntity,
-      //   // ViewGetUserNurse,
-      // ],
-      // timezone: '+6:00',
+      entities: [
+        UserEntity,
+        CatUserType,
+        PatientEntity,
+        DoctorEntity,
+        NurseEntity,
+        CatRelationshipEntity,
+        CatPatientStatusEntity,
+        EventoEntity,
+        ViewGetPacienteEventos,
+        // VitalSignsEntity,
+      ],
       timezone: 'Z',
       synchronize: isDevMode,
       autoLoadEntities: true,

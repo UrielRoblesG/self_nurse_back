@@ -19,7 +19,7 @@ export class NurseService {
       relations: { paciente: { nurse: true } },
     });
 
-    if (user.paciente.nurse.id == null) {
+    if (user.paciente.nurse == null) {
       return null;
     }
     const nurse = await this.userRepository.findOne({

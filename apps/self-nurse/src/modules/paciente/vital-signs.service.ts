@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { VitalSignsEntity } from './entities/vital-signs.entity';
+import { VitalSignsEntity } from '../../database/entities/vital-signs.entity';
 
 @Injectable()
 export class VitalSignsService {

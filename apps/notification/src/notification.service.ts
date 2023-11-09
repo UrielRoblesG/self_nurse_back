@@ -13,7 +13,7 @@ import { Notificacion } from '../model/notificacion';
 
 @Injectable()
 export class NotificationService {
-  private readonly _logger = new Logger();
+  private readonly _logger = new Logger(NotificationService.name);
 
   constructor(
     @InjectRepository(EventoEntity)
