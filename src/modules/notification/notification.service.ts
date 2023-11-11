@@ -1,15 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  EventoEntity,
-  NurseEntity,
-  PatientEntity,
-  UserEntity,
-} from 'apps/self-nurse/src/database/entities/';
-import { ViewGetPacienteEventos } from 'apps/self-nurse/src/database/views';
+
 import { Between, Repository, In } from 'typeorm';
 import { addDays } from 'date-fns'; 
-import { Notificacion } from '../model/notificacion';
+import { Notificacion } from '../../models/notificacion';
+import { EventoEntity, UserEntity } from 'src/database/entities';
+import { ViewGetPacienteEventos } from 'src/database/views';
 
 @Injectable()
 export class NotificationService {

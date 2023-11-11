@@ -1,32 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/self-nurse/src",
+  "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true,
-    "webpack": true,
-    "tsConfigPath": "apps/self-nurse/tsconfig.app.json"
-  },
-  "monorepo": true,
-  "root": "apps/self-nurse",
-  "projects": {
-    "self-nurse": {
-      "type": "application",
-      "root": "apps/self-nurse",
-      "entryFile": "main",
-      "sourceRoot": "apps/self-nurse/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/self-nurse/tsconfig.app.json"
-      }
-    },
-    "notification": {
-      "type": "application",
-      "root": "apps/notification",
-      "entryFile": "main",
-      "sourceRoot": "apps/notification/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/notification/tsconfig.app.json"
-      }
-    }
+    "deleteOutDir": true
   }
 }

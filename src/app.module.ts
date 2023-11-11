@@ -1,25 +1,26 @@
 
-import { PatientStatusController } from './modules/admin/patient.status/patient.status.controller';
-import { PatientStatusModule } from './modules/admin/patient.status/patient.status.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
-
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './modules/auth/guard/auth.guard';
+import { ScheduleModule } from '@nestjs/schedule';
 import { JwtService } from '@nestjs/jwt';
-import { RoleGuard } from './modules/role/guard/role.guard';
-import { RoleModule } from './modules/role/role.module';
-import { RelationshipModule } from './modules/admin/relationship/relationship.module';
+
 import { DatabaseModule } from './database/database.module';
+import { PatientStatusController } from './modules/admin/patient.status/patient.status.controller';
+import { PatientStatusModule } from './modules/admin/patient.status/patient.status.module';
+import { RelationshipModule } from './modules/admin/relationship/relationship.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { DoctorModule } from './modules/doctor/doctor.module';
 import { EventoModule } from './modules/evento/evento.module';
 import { NurseModule } from './modules/nurse/nurse.module';
-import { DoctorModule } from './modules/doctor/doctor.module';
 import { PacienteModule } from './modules/paciente/paciente.module';
-import { ScheduleModule } from '@nestjs/schedule';
+import { RoleGuard } from './modules/role/guard/role.guard';
+import { RoleModule } from './modules/role/role.module';
+import { UserModule } from './modules/user/user.module';
+import { AuthGuard } from './modules/auth/guard/auth.guard';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     NurseModule,
     DoctorModule,
     PacienteModule,
+    NotificationModule
   ],
   controllers: [PatientStatusController, AppController],
   providers: [

@@ -7,11 +7,10 @@ import { Server } from 'socket.io';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Injectable, Logger } from '@nestjs/common';
 import { NotificationService } from './notification.service';
-import { FirebaseService } from './services/firebase.service';
-import { Notificacion } from '../model/notificacion';
+import { FirebaseService } from '../../services/firebase.service';
+import { Notificacion } from '../../models/notificacion';
 import { subHours } from 'date-fns';
 
-// TODO: Crear modelo para los mensajes de la notificacion
 @Injectable()
 @WebSocketGateway()
 export class NotificationGateway implements OnGatewayInit {
