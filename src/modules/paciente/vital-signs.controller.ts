@@ -1,15 +1,19 @@
-import { Controller, Body, Post, Get, Req, Res, Logger } from '@nestjs/common';
+import { Controller, Body, Post,UseGuards, Logger, Get, Req, Res } from '@nestjs/common';
 import { VitalSignsService } from './vital-signs.service';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { VitalSignsAlertDto } from './dto/vital-signs-alert.dto';
 
-@Controller('api/vital-signs')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
+@Controller('api/vitalsigns') 
 export class VitalSignsController {
 
   private readonly _logger = new Logger(VitalSignsController.name);
   
   constructor(private readonly vitalSignsService: VitalSignsService) {}
   
-  @Post('vitalsigns/by-users')
+  @Post('by-users')
   async findByUserIds(@Body('userIds') userIds: number[]) {
     return await this.vitalSignsService.findByUserIds(userIds);
   }

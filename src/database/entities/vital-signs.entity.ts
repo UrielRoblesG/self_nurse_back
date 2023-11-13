@@ -18,7 +18,6 @@ export class VitalSignsEntity {
   @Column({ type: 'timestamp' })
   fecha: Date;
 
-  @ManyToOne(() => UserEntity)
-  @JoinColumn({ name: 'userId' }) 
-  user: UserEntity;
+  @Column({ type: 'int' })
+  userId: number;
 }
