@@ -19,11 +19,11 @@ import { ViewGetPacienteEventos, ViewGetUserNurse } from './views';
 export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
   inject: [ConfigService],
   async useFactory(config: ConfigService) {
-    const isDevMode = config.get('NODE_ENV') !== Environment.Production;
+    const isDevMode = config.get('NODE_ENV') != Environment.Production;
     console.log(
       `Modo de desarrollo ${isDevMode ? 'Desarrollo' : 'Produccion'}`,
     );
-    const dbConfig = {
+    const dbConfig = { 
       type: 'mysql',
       host: config.get('DB_HOST'),
       port: +config.get('DB_PORT'),
@@ -40,10 +40,10 @@ export const DatabaseProvider: DynamicModule = TypeOrmModule.forRootAsync({
         CatPatientStatusEntity,
         EventoEntity,
         ViewGetPacienteEventos,
-        // VitalSignsEntity,
+        VitalSignsEntity,
       ],
       timezone: 'Z',
-      synchronize: isDevMode,
+      synchronize: false,
       autoLoadEntities: true,
       logging: config.get('DB_LOGGING'),
     } as ConnectionOptions;

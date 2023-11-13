@@ -8,5 +8,6 @@ import { VitalSignsEntity } from '../../database/entities/vital-signs.entity';
   imports: [TypeOrmModule.forFeature([VitalSignsEntity])],
   providers: [VitalSignsService],
   controllers: [VitalSignsController],
+  exports: [VitalSignsService]
 })
 export class VitalSignsModule {}

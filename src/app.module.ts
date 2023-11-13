@@ -21,6 +21,8 @@ import { RoleModule } from './modules/role/role.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthGuard } from './modules/auth/guard/auth.guard';
 import { NotificationModule } from './modules/notification/notification.module';
+import { SocketsModule } from './sockets/sockets.module';
+import { VitalSignsModule } from './modules/paciente/vital-signs.module';
 
 @Module({
   imports: [
@@ -37,7 +39,9 @@ import { NotificationModule } from './modules/notification/notification.module';
     NurseModule,
     DoctorModule,
     PacienteModule,
-    NotificationModule
+    NotificationModule,
+    SocketsModule,
+    VitalSignsModule
   ],
   controllers: [PatientStatusController, AppController],
   providers: [

@@ -12,7 +12,7 @@ import { Notificacion } from '../../models/notificacion';
 import { subHours } from 'date-fns';
 
 @Injectable()
-@WebSocketGateway()
+@WebSocketGateway(81)
 export class NotificationGateway implements OnGatewayInit {
   private readonly logger: Logger = new Logger(NotificationGateway.name);
 
@@ -20,8 +20,8 @@ export class NotificationGateway implements OnGatewayInit {
 
   constructor(private readonly notificationService: NotificationService) {}
 
-  afterInit() {
-    this.logger.log('Socket.io service initialized.');
+  afterInit(server:any) {
+    this.logger.log('notification service initialized.');
   }
 
   @Cron("0 */4 * * * *", {

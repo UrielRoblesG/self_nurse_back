@@ -1,4 +1,4 @@
-import { Logger, UseGuards, Controller } from '@nestjs/common';
+import { Logger, UseGuards, Controller, Injectable } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import {
   MessageBody,
@@ -19,7 +19,9 @@ import { DoctorService } from '../modules/doctor/doctor.service';
 import { NurseService } from '../modules/nurse/nurse.service';
 import { Socket } from 'socket.io';
 import { User } from '../models/user';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
+@Injectable()
 @WebSocketGateway(80, { namespace: 'users' })
 export class UsersGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
@@ -33,6 +35,7 @@ export class UsersGateway
     private readonly doctorService: DoctorService,
     private readonly nurseService: NurseService,
   ) {}
+
   @WebSocketServer()
   server: any;
 
@@ -101,6 +104,6 @@ export class UsersGateway
   }
 
   afterInit(server: any) {
-    this._logger.log('Socket is live');
+    this._logger.log(`User socket en puerto`);
   }
 }
