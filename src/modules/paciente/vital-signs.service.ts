@@ -1,21 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
-import { VitalSignsEntity } from '../../database/entities';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class VitalSignsService {
   constructor(
-    @InjectRepository(VitalSignsEntity)
-    private vitalSignsRepository: Repository<VitalSignsEntity>,
+    @InjectEntityManager()
+    private entityManager: EntityManager,
   ) {}
 
-  async findByUserIds(userIds: number[]): Promise<VitalSignsEntity[]> {
-    return await this.vitalSignsRepository.find({
-      where: {
-        user: { id: In(userIds) }, 
-      },
-      relations: ['user'], // Carga la relación con la entidad UserEntity
-    });
+  async findByUserIds(userIds: number[]): Promise<any[]> {
+    const userIdsString = userIds.join(', ');
+
+    const query = `
+      SELECT 
+        vs.id, vs.oxigenacion, vs.ritmo, vs.temperatura, vs.fecha, 
+        u.id AS userId, u.nombre, u.email
+      FROM 
+        vitalSigns AS vs
+      JOIN 
+        usuario AS u ON vs.userId = u.id
+      WHERE 
+        vs.userId IN (${userIdsString})
+    `;
+
+    return await this.entityManager.query(query);
   }
 }
