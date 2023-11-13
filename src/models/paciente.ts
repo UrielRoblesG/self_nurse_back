@@ -12,6 +12,7 @@ export class Paciente {
   codigo: string;
   birthday: string;
   status: CatPacienteEstatus;
+  historialMedico : string;
 
   constructor({
     id,
@@ -23,6 +24,7 @@ export class Paciente {
     idStatus,
     codigo,
     birthday,
+    historialMedico
   }: PatientEntity) {
     this.id = id;
     this.genero = gender;
@@ -33,5 +35,6 @@ export class Paciente {
     this.codigo = codigo;
     this.status = CatPacienteEstatus.FromPatientEntity(idStatus);
     this.birthday = birthday;
+    this.historialMedico = historialMedico;
   }
 }
