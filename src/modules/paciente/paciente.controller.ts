@@ -70,26 +70,25 @@ export class PacienteController {
     }
   }
 
-  @Get()
-  findAll() {
-    // return this.pacienteService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pacienteService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
+  @Patch('actualizarHistorialMedico')
+  async update(
     @Body() updatePacienteDto: UpdatePacienteDto,
+    @Req() req: Request,
+    @Res() res: Response
   ) {
-    return this.pacienteService.update(+id, updatePacienteDto);
-  }
+    try {
+      const user = req['user'];
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pacienteService.remove(+id);
+      const response = await this.pacienteService.updateHistorialMedico(updatePacienteDto, user);
+      
+      if (!response) {
+        return res.status(HttpStatus.NOT_FOUND).json(new Resp('Error', 'Error al actualizar historial medico'));
+      }
+
+      return res.status(HttpStatus.OK).json(new Resp('Ok','Operación exitosa'));
+    } catch (error) {
+      this._logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
+    }
   }
 }

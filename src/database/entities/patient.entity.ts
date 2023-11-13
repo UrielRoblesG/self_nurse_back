@@ -38,6 +38,9 @@ export class PatientEntity {
   @Column({ name: 'cumpleanos', type: 'varchar' }) 
   birthday: string;
 
+  @Column({name: 'historial_medico', type: 'varchar', nullable: true})
+  historialMedico: string;
+
   @ManyToOne(() => CatPatientStatusEntity, { eager: true })
   idStatus: CatPatientStatusEntity;
 

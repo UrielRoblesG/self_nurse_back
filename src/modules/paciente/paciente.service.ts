@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CreatePacienteDto } from './dto/create-paciente.dto';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../../database/entities';
+import { PatientEntity, UserEntity } from '../../database/entities';
 import { Repository } from 'typeorm';
 import { DoctorService } from '../doctor/doctor.service';
 
@@ -13,6 +13,8 @@ export class PacienteService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly doctorService: DoctorService,
+    @InjectRepository(PatientEntity)
+    private readonly patientRepository : Repository<PatientEntity>
   ) {}
 
   async findDoctor(user: any): Promise<UserEntity> {
@@ -117,8 +119,34 @@ export class PacienteService {
     return `This action returns a #${id} paciente`;
   }
 
-  update(id: number, updatePacienteDto: UpdatePacienteDto) {
-    return `This action updates a #${id} paciente`;
+  async updateHistorialMedico(updatePacienteDto: UpdatePacienteDto, user: any) {
+    const {id} = user;
+    const { historialMedico }=  updatePacienteDto;
+    try {
+      
+    const exist = await this.userRepository.findOne({
+      where: {
+        deletedAt: null,
+        id: id,
+      },
+      relations: {
+        paciente: true
+      }
+    });
+
+    if (exist == null) {
+      return false;
+    }
+
+    exist.paciente.historialMedico = historialMedico;
+
+    await this.patientRepository.save(exist.paciente);
+
+    return true;
+    } catch(e) {
+      this._looger.error(e);
+      return false;
+    }
   }
 
   remove(id: number) {

@@ -4,13 +4,13 @@ import { PacienteController } from './paciente.controller';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from '../../database/entities';
+import { PatientEntity, UserEntity } from '../../database/entities';
 import { DoctorService } from '../doctor/doctor.service';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, PatientEntity]),
   ],
   controllers: [PacienteController],
   providers: [PacienteService, JwtService, DoctorService],
