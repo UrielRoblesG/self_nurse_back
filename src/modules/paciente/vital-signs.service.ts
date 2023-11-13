@@ -15,6 +15,7 @@ export class VitalSignsService {
       where: {
         user: { id: In(userIds) }, 
       },
+      relations: ['user'], // Carga la relación con la entidad UserEntity
     });
   }
 }
