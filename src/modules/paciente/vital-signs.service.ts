@@ -15,11 +15,13 @@ export class VitalSignsService {
     const query = `
       SELECT 
         vs.id, vs.oxigenacion, vs.ritmo, vs.temperatura, vs.fecha, 
-        u.id AS userId, u.nombre, u.email
+        u.id AS userId, u.nombre, u.apellidoPaterno, u.apellidoMaterno, p.edad, u.email
       FROM 
         vitalSigns AS vs
       JOIN 
         usuario AS u ON vs.userId = u.id
+      JOIN 
+        paciente AS p ON u.pacienteId = p.id
       WHERE 
         vs.userId IN (${userIdsString})
     `;
