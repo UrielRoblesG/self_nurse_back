@@ -116,11 +116,30 @@ export class PacienteController {
         notificacion.title = 'Temperatura alta';
         notificacion.body = `La temperatura del paciente esta aumentando: ${body.temperature} Cº.`;
       }
-      this.firebaseService.sendSingleNotification(userExist.deviceToken, notificacion)
-
+      await this.firebaseService.sendSingleNotification(userExist.deviceToken, notificacion)
+      return res.status(HttpStatus.OK).json(new Resp('Ok', 'Operacion exitosa'));
     } catch (error) {
       this._logger.error(error);
       return res.status(HttpStatus.BAD_GATEWAY).json(new Resp('Error', error));
     }  
+  }
+
+
+  @Get('getMonthlyAlerts/:year/:mes')
+  async getAlerts(@Res() res: Response, 
+        @Req() req : Request, 
+        @Param('year') year: number,
+         @Param('mes') mes: number) {
+    try {
+      const user = req['user'];
+      
+      const alertas = await this.pacienteService.getMonthlyAlerts(user, mes, year);
+
+      return res.status(Number.parseInt(alertas.status)).json(alertas);
+
+    } catch (error) {
+      this._logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
+    }
   }
 }

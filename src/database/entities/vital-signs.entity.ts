@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { UserEntity } from './index';
 
-@Entity({ name: 'vitalSigns' })
+@Entity({ name: 'vital_signs' })
 export class VitalSignsEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;

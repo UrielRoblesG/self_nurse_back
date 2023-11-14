@@ -94,4 +94,22 @@ export class NurseController {
       return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
     }
   }
+
+  @Get('getPatientMonthlyAlerts/:year/:mes')
+  async getAlerts(@Res() res: Response, 
+        @Req() req : Request, 
+        @Param('year') year: number,
+         @Param('mes') mes: number) {
+    try {
+      const user = req['user'];
+      
+      const alertas = await this.nurseService.getPatientMonthlyAlerts(user, mes, year);
+
+      return res.status(Number.parseInt(alertas.status)).json(alertas);
+
+    } catch (error) {
+      this._logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
+    }
+  }
 }

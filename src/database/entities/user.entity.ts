@@ -13,7 +13,6 @@ import {
 } from 'typeorm';
 
 import {
-  EventoEntity,
   NurseEntity,
   DoctorEntity,
   PatientEntity,

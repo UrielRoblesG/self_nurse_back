@@ -1,3 +1,5 @@
+export { AlertEntity } from './alert.entity';
+
 export { EventoEntity } from './evento.entity';
 export { CatPatientStatusEntity } from './cat.patient.status.entity';
 export { NurseEntity } from './nurse.entity';
