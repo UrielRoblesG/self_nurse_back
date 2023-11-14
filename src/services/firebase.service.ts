@@ -11,11 +11,7 @@ export class FirebaseService {
       __dirname,
       '..',
       '..',
-      '..',
-      'apps',
-      'notification',
-      'config',
-      'push-notification-key.json',
+      '/config/push-notification-key.json'
     );
     this._logger.log(`CertPath: ${certPath}`);
     firebase.initializeApp({

@@ -1,16 +1,15 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
   Req,
   Res,
   Logger,
   HttpStatus,
+  Post,
 } from '@nestjs/common';
 import { PacienteService } from './paciente.service';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
@@ -19,6 +18,10 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { Response as Resp } from '../../common/responses/response';
 import { User } from '../../models/user';
+import { VitalSignsAlertDto } from './dto/vital-signs-alert.dto';
+import { UserService } from '../user/user.service';
+import { Notificacion } from 'src/models/notificacion';
+import { FirebaseService } from 'src/services/firebase.service';
 
 @ApiTags('Paciente')
 @ApiBearerAuth()
@@ -26,7 +29,9 @@ import { User } from '../../models/user';
 @Controller('api/paciente')
 export class PacienteController {
   private readonly _logger = new Logger(PacienteController.name);
-  constructor(private readonly pacienteService: PacienteService) {}
+  constructor(private readonly pacienteService: PacienteService,
+     private readonly userService : UserService,
+      private readonly firebaseService : FirebaseService,) {}
 
   @Get('getDoctor')
   async getDoctorByPatientToken(@Req() req: Request, @Res() res: Response) {
@@ -90,5 +95,32 @@ export class PacienteController {
       this._logger.error(error);
       return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
     }
+  }
+
+  @Post('getVitalSignsAlert') 
+  async getVitalSignsAlert(@Req() req : Request, @Res() res : Response, @Body() body : VitalSignsAlertDto)  {
+    try {
+      const user = req['user'];
+      this._logger.debug(body);
+      const userExist = await this. userService.findOneById(user['id']);
+
+      if (userExist == null) {
+        return res.status(HttpStatus.BAD_GATEWAY).json(new Resp('Error', 'Usuario no encontrado'));  
+      }
+    let notificacion = new Notificacion();
+      if (body.type == 1) {
+        notificacion.title = 'Ritmo cardiaco bajo';
+        notificacion.body = `El ritmo cardiaco del paciente esta bajo: ${body.bpm} bpm.`;
+      }
+      else {
+        notificacion.title = 'Temperatura alta';
+        notificacion.body = `La temperatura del paciente esta aumentando: ${body.temperature} Cº.`;
+      }
+      this.firebaseService.sendSingleNotification(userExist.deviceToken, notificacion)
+
+    } catch (error) {
+      this._logger.error(error);
+      return res.status(HttpStatus.BAD_GATEWAY).json(new Resp('Error', error));
+    }  
   }
 }

@@ -95,7 +95,7 @@ export class UsersGateway
       if (user.role == 'patient') {
         await this.userService.updatePatientStatus(user.id);
       }
-
+      this._logger.log('Client disconnected');
       client.disconnect();
     } catch (error) {
       this._logger.error(error);

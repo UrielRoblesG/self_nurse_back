@@ -5,14 +5,11 @@ import { IsDecimal, IsNotEmpty, IsNumber } from "class-validator";
 export class VitalSignsAlertDto {
     
     @ApiProperty()
-    @IsDecimal()
-    spO2 : number;
-
-    @ApiProperty()
-    @IsNumber()
-    bpm : number;
+    bpm : string;
     
     @ApiProperty()
-    @IsDecimal()
-    temperature: number; 
+    temperature: string; 
+
+    @ApiProperty()
+    type : number;
 } 
