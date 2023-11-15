@@ -125,25 +125,27 @@ export class NurseService {
     }
 
 
-    query = `SELECT
-                        T0.id,
-                        T0.type,
-                        T0.patientId,
-                        T0.lecturaId,
-                        T1.fecha,
-                        T1.oxigenacion spO2,
-                        T1.ritmo bpm,
-                        T1.temperatura temp
-                      FROM alert T0
-                      INNER JOIN vital_signs T1 on T0.lecturaId = T1.id
-                      WHERE T0.patientId = ${pacienteId} and T0.deleted_at is null
-                      AND MONTH( T1.fecha) = ${mes} and YEAR(T1.fecha) = ${year}`;
+    query = `SELECT T0.id,
+    T0.type,
+    T0.patientId,
+    T0.lecturaId,
+    T1.fecha,
+    CONCAT(u.nombre, ' ', u.apellidoPaterno) as nombre,
+    T1.oxigenacion spO2,
+    T1.ritmo       bpm,
+    T1.temperatura temp
+    FROM alert T0
+    INNER JOIN vital_signs T1 on T0.lecturaId = T1.id
+    inner join paciente p on T0.patientId = p.id
+    inner join usuario u on p.id = u.pacienteId
+  WHERE T0.patientId = ${pacienteId} and T0.deleted_at is null
+  AND MONTH( T1.fecha) = ${mes} and YEAR(T1.fecha) = ${year}`;
 
     const alertas = await this.entityManager.query(query);
     
 
     if (alertas.Length <= 0) {
-      return new Resp('NOT_FOUND', 'No se encontraron alertas');
+      return new Resp('404', 'No se encontraron alertas');
     }
 
     let oAlertas = new Array();

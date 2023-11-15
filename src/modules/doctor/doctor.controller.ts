@@ -50,13 +50,40 @@ export class DoctorController {
     }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDoctorDto: UpdateDoctorDto) {
-    return this.doctorService.update(+id, updateDoctorDto);
+  @Get('getPatientsMonthlyAlerts/:year/:mes')
+  async getPatientsAlerts(@Res() res: Response, 
+        @Req() req : Request, 
+        @Param('year') year: number,
+         @Param('mes') mes: number) {
+    try {
+      const user = req['user'];
+      
+      const alertas = await this.doctorService.getPatientsMonthlyAlerts(user, mes, year);
+
+      return res.status(Number.parseInt(alertas.status)).json(alertas);
+
+    } catch (error) {
+      this._logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
+    }
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.doctorService.remove(+id);
+  @Get('getPatientMonthlyAlerts/:year/:mes/:pacienteId')
+  async getAlerts(@Res() res: Response, 
+        @Req() req : Request, 
+        @Param('year') year: number,
+         @Param('mes') mes: number,
+         @Param('pacienteId') pacienteId: number) {
+    try {
+      const user = req['user'];
+      
+      const alertas = await this.doctorService.getPatientMonthlyAlerts(user, mes, year, pacienteId);
+
+      return res.status(Number.parseInt(alertas.status)).json(alertas);
+
+    } catch (error) {
+      this._logger.error(error);
+      return res.status(HttpStatus.BAD_REQUEST).json(new Resp('Error', error));
+    }
   }
 }
