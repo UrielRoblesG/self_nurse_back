@@ -13,12 +13,12 @@ export class Alerta {
     spO2: number;
     bpm: number;
     temp: number;
-
+    nombre: string;
 
 
     constructor(id: number, type: number, patient: number,
          lectura: number, fecha: Date, spO2: number,
-        bpm: number, temp: number) {
+        bpm: number, temp: number, nombre: string) {
         this.id = id;
         this.type = type;
         this.patientId = patient;
@@ -27,9 +27,10 @@ export class Alerta {
         this.spO2 = spO2;
         this.bpm = bpm;
         this.temp = temp;
+        this.nombre = nombre;
     }
 
     static fromEntityModel(data : any): Alerta {
-        return new Alerta(data.id, data.type, data.patientId, data.lecturaId, data.fecha, data.spO2, data.bpm, data.temp);
+        return new Alerta(data.id, data.type, data.patientId, data.lecturaId, data.fecha, data.spO2, data.bpm, data.temp, data.nombre);
     }
 }
